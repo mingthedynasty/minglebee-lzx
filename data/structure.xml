@@ -1,0 +1,271 @@
+<minglebee> 
+    <menu label="projects" offset="5">
+        <project id="MOTOGP" label="motogp stats viewer"
+                 color="0xD6F1EC" color2="0xFF7700" categoryopacity=".75"
+                 demolink="http://www.minglebee.com/gp/"
+                 description="An application to view MotoGP racing statistics for specific races and the season as a whole.">
+            <introscreen>
+                <copy>
+                    <text title="background"
+                          text="I love all things MotoGP, the premier motorcycle road-road racing championship. I love data visualization.  So the logical conclusion was for me to create a visualization of MotoGP racing statistics.  The project explores different means of viewing a large set of data in the hopes of providing new and novel ways to understand the championship, individual races and interrelationships between riders, teams, manufacturers, and tires."/>
+                    <text title="features"
+                          text="The initial screen displays  a comprehensive season view of the championship.  Users can then drill down into each race to explore visualizations of lap graphs, gap differences by lap, lap times,  and average speeds. These details can also be cross referenced by tire, manufacturer and lap time data."/>
+                    <text title="roles"
+                          text="Interaction Designer&lt;br/&gt;Visual Designer&lt;br/&gt;Engineer"/>
+                </copy>
+            </introscreen>
+            <gallery>
+                <item thumb="resources/motogp/motogp_thumb_1.jpg"
+                      src="resources/motogp/motogp_screenshot_1.jpg"
+                      caption="season view"/>
+                <!--item thumb="resources/motogp/motogp_thumb_3.jpg"
+                      src="resources/motogp/motogp_screenshot_3.jpg"
+                      caption="lap graph and gaps"/-->
+                <item thumb="resources/motogp/motogp_thumb_4.jpg"
+                      src="resources/motogp/motogp_screenshot_4.jpg"
+                      caption="lap graph and times"/>
+                <item thumb="resources/motogp/motogp_thumb_6.jpg"
+                      src="resources/motogp/motogp_screenshot_6.jpg"
+                      caption="speed chart"/>
+                <item thumb="resources/motogp/motogp_thumb_5.jpg"
+                      src="resources/motogp/motogp_screenshot_5.jpg"
+                      caption="by manufacturer"/>
+            </gallery>
+        </project>
+        <project id="RSS" label="blog bubbles"
+                 color="0xFDF1B4" color2="0x76366A" categoryopacity=".7"
+                 demolink="http://www.minglebee.com/rss/main.lzx.html" 
+                 description="A visualization of RSS feeds.">
+            <!--screens>
+                <screen id="intro"> 
+                    <text x="40" width="596" text=""/>
+                    <text x="40" y="65" width="315"
+                        text="After seeing the Mac's RSS visualizer screensaver, I became intrigued with the idea.  I wanted to keep the same &lt;font color='#990033'&gt;ambient movement&lt;/font&gt; of the Mac version but have &lt;font color='#990033'&gt;multiple feeds&lt;/font&gt; visible at one time.  In order to extend the concept further, I tried to explore ways to visually convey each feed's characteristics, mainly the &lt;font color='#990033'&gt;number of posts&lt;/font&gt; and &lt;font color='#990033'&gt;how often posts are made&lt;/font&gt;.  &lt;br/&gt;&lt;br/&gt;&lt;br/&gt;In the upper left, users can enter in the url of their desired feeds or select from a pre-filled drop down list.  The &lt;font color='#990033'&gt;size and opacity&lt;/font&gt; of the sphere represents how recently it was posted, with larger diameters mapping to more recent posts.  To refine the idea, posts made during the last 24 hours appear with a subtle &lt;font color='#990033'&gt;glow&lt;/font&gt;, drawing even more attention to them.  User's can &lt;font color='#990033'&gt;minimize and maximize individual feeds&lt;/font&gt; to focus in on those of particular interest.  When a feed is maximized, the posts are  and &lt;font color='#990033'&gt;arranged chronogically&lt;/font&gt; around a circle, with the details the selected post in the center."/>
+                    <image x="390" y="0" url="resources/rss/rss_intro_1.jpg"/> 
+                </screen> 
+            </screens--> 
+            <introscreen>
+                <copy>
+                    <text title="background"
+                          text="After seeing Apple's RSS visualizer screensaver, I decided to implement one of my own.  I wanted to keep the same ambient movement of the Apple version but have multiple feeds visible at one time.  In order to extend the concept further, I tried to explore ways to visually convey each feed's characteristics."/>
+                    <text title="features"
+                          text="In the upper left, users can enter in the url of their desired feeds or select from a pre-filled drop down list.  The size and opacity of the sphere represents how recently it was posted, with larger diameters mapping to more recent posts.  To refine the idea, posts made during the last 24 hours appear with a glow, drawing more attention to them.  When a feed is maximized, the posts are arranged chronologically around a circle, with the details of the selected post in the center."/>
+                    <text title="roles"
+                          text="Interaction Designer&lt;br/&gt;Visual Designer&lt;br/&gt;Engineer"/>
+                </copy>
+            </introscreen>
+
+            <gallery>
+                <item thumb="resources/rss/rss_thumb_1.jpg"
+                      src="resources/rss/rss_screenshot_1.jpg"
+                      caption="four feeds"/>
+                <item thumb="resources/rss/rss_thumb_2.jpg"
+                      src="resources/rss/rss_screenshot_2.jpg"
+                      caption="maximized feed"/>
+            </gallery>
+        </project> 
+        <project id="DAILY_PHOTOS" label="daily photos" 
+                 color2="0xFF9900"
+                 description="Handmade books containing a months worth of photos taken at the same time everyday.">
+            <introscreen>
+                <copy>
+                    <text title="background" text="I feel like most pictures we take are of 'memorable' moments: vacations, school plays, birthdays.  I wanted to get a better sense of what my average everyday life was like, the walks to the bus, the grocery trips, the errands.  To do so I began taking a pictures at the same time everyday. I then compiled all the photos and short write-ups into handmade books."/>
+                    <text title="version 1 (analog)" text="All photos were taken with a Polaroid land camera which I toted with me everywhere.  Each year was color coded, green for 2001, pink for 2002.  I selected paper that held a special meaning for that month, a map, paint swatches, posters, etc, to decorate the book with."/>
+                    <text title="version 2 (digital)" text="All photos were taken with a Nikon digital camera. The books could be flipped through traditionally or completely unfolded to show the photos in a continuous train.  I also graphed my mood and the number of people in the vicinity on each page."/>
+                </copy>
+            </introscreen>
+            <gallery>
+                <item thumb="resources/daily/daily_thumb_1.jpg"
+                      src="resources/daily/daily_screenshot_1.jpg"
+                      caption="booked stretched open v2"/>
+                <item thumb="resources/daily/daily_thumb_2.jpg"
+                      src="resources/daily/daily_screenshot_2.jpg"
+                      caption="books v2"/>
+                <item thumb="resources/daily/daily_thumb_3.jpg"
+                      src="resources/daily/daily_screenshot_3.jpg"
+                      caption="closeup v2"/>
+                <item thumb="resources/daily/daily_thumb_5.jpg"
+                      src="resources/daily/daily_screenshot_5.jpg"
+                      caption="books v1"/>
+                <item thumb="resources/daily/daily_thumb_6.jpg"
+                      src="resources/daily/daily_screenshot_6.jpg"
+                      caption="book cover v1"/>
+                <item thumb="resources/daily/daily_thumb_7.jpg"
+                      src="resources/daily/daily_screenshot_7.jpg"
+                      caption="closeup v1"/>
+            </gallery>
+        </project>
+        <!--project id="MESSAGE_BOARD"
+                 label="message board" color="0xF3E9F8" demolink="" 
+                 description="An application that used to view a small sized 
+                              message board"/--> 
+    </menu> 
+    <menu label="work" offset="1"> 
+        <project id="FNAC" label="FNAC product page" color2="0xDFA00D" color="0x777777" color3="0xCE5F24"
+                 headeropacity=".2" linkcolor="0x555555"
+                 categoryopacity=".2"
+                 demolink="http://micro-informatique.fnac.com/sh55958/Ordinateur-portable/Par-marque/Tous-les-portables"
+                 description="A retail site where users can browse for electronics and use filters to narrow their result set.">
+            <introscreen>
+                <copy>
+                    <text title="background"
+                          text="FNAC, a major electronics retail store in France, wanted to provide their users a highly interactive and engaging web shopping experience."/>
+                    <text title="features"
+                          text="The application displays the list of products in either a table or 'magazine' view.  The lists can be sorted and filtered dyanmically. Users can click on a thumbnail and see detailed information on the product or to add it to their shopping basket. The application contains a variety of complex animations and transitions that serve to distinguish the website from those of competitors."/>
+                    <text title="roles" text="Software Engineer"/>
+                </copy>
+            </introscreen>
+            <gallery>
+                <item thumb="resources/fnac/fnac_thumb_1.jpg"
+                      src="resources/fnac/fnac_screenshot_1.jpg"
+                      caption="product catalog view"/>
+                <item thumb="resources/fnac/fnac_thumb_2.jpg"
+                      src="resources/fnac/fnac_screenshot_2.jpg"
+                      caption="product table view"/>
+                <item thumb="resources/fnac/fnac_thumb_3.jpg"
+                      src="resources/fnac/fnac_screenshot_3.jpg"
+                      caption="dynamic filters"/>
+                <item thumb="resources/fnac/fnac_thumb_4.jpg"
+                      src="resources/fnac/fnac_screenshot_4.jpg"
+                      caption="intermediary basket"/>
+                <item thumb="resources/fnac/fnac_thumb_5.jpg"
+                      src="resources/fnac/fnac_screenshot_5.jpg"
+                      caption="application in fnac.com wrapper"/>
+
+            </gallery>
+        </project> 
+        <project id="MFC" label="mutual fund compare tool" color="0xB3C2E1"
+                 color2="0xB35D24"
+                 demolink="http://www3.troweprice.com/retailtools/compareTool/mutualFundCompare.do"
+                 description="A financial appliction providing users the ability to easily compare mutual fund data."> 
+            <introscreen>
+                <copy>
+                    <text title="background"
+                          text="T.Rowe Price wanted to rework their existing Mutual Fund Comparison Tool.  They wanted a more usable and integrated method in which to compare and select funds, as well as some 'pizzazz' to distinguish the tool from their competitors and to make the tool more fun to use."/>
+                    <text title="features"
+                          text="The application contains features such as dynamic filtering, animated sorting, fund name type ahead, as well as high fidelity printing of the comparison report.  There are numerous charts, graphs and tables displaying the large quantity of fund data for easier comparison.  All of these features are available to the user within a seamless environment."/>
+                    <text title="roles" text="Technical Lead"/>
+                </copy>
+            </introscreen>
+            <gallery>
+                <item thumb="resources/mfc/mfc_thumb_1.jpg"
+                      src="resources/mfc/mfc_screenshot_1.jpg"
+                      caption="fund list and filters"/>
+                <item thumb="resources/mfc/mfc_thumb_2.jpg"
+                      src="resources/mfc/mfc_screenshot_2.jpg"
+                      caption="comparison overview"/>
+                <item thumb="resources/mfc/mfc_thumb_3.jpg"
+                      src="resources/mfc/mfc_screenshot_3.jpg"
+                      caption="performance graphs"/>
+                <item thumb="resources/mfc/mfc_thumb_4.jpg"
+                      src="resources/mfc/mfc_screenshot_4.jpg"
+                      caption="risk bubble graph"/>
+                <!--item thumb="resources/mfc/mfc_thumb_5.jpg"
+                      src="resources/mfc/mfc_screenshot_5.jpg"
+                      caption="fund composition tables"/-->
+            </gallery>
+        </project> 
+        <project id="MEEVEE" label="meeveetv" color="0x777777" color2="0xED8000" color3="0xCE5F24"
+                 headeropacity=".2" linkcolor="0x555555"
+                 categoryopacity=".2"
+                 demolink="http://www.meevee.com/video/watch.aspx"
+                 description="A video hub where users can search, scan, play, and save videos of interest.">
+            <introscreen>
+                <copy>
+                    <text title="background"
+                          text="MeeVee provides users with information about tv shows and listings. The logical step was to add the ability to search for videos related to television shows. Laszlo Studios created a video hub where users can search for any video, community or network, across multiple video sites."/>
+                    <text title="features"
+                          text="The application allows users to search for videos by specifying any keyword. Video searches can be saved as 'channels' to allow for more convenient viewing in the future. A filmstrip provides users will a way to easily browse through search results in order to find videos of particular interest and then save or rate them."/>
+                    <text title="roles" text="Technical Lead"/>
+                </copy>
+            </introscreen>
+            <gallery>
+                <item src="resources/meevee/meevee_screenshot_1.jpg"
+                      caption="meeveetv application"/>
+            </gallery>
+        </project> 
+        <!--project id="PGT" label="portfolio growth tracker" 
+                 color="0xDADAA3" color2="0xB01919"
+                 description="A prototype made for T.Rowe Price where users can track their portfolio over a number of years."> 
+            <introscreen>
+                <copy>
+                    <text title="background"
+                          text="T.Rowe Price asked Laszlo Studios to rework their existing Mutual Fund Comparison Tool.  They wanted an more usable and integrated method in which to compare and select funds, as well as some Laszlo pizzazz to distinguish the tool from their competitors and to make the tool more fun to use."/>
+                    <text title="features"
+                          text="The resultant application contains features such as dynamic filtering, animated sorting, fund name type ahead, as well as high fidelity printing of the comparison report.  There are numerous charts, graphs and tables displaying the large quantity of fund data for easier comparison.  All of these features are available to the user within a seamless environment."/>
+                    <text title="roles" text="Technical Lead"/>
+                </copy>
+            </introscreen>
+            <gallery>
+                <item thumb="resources/pgt/pgt_thumb_1.jpg"
+                      src="resources/pgt/pgt_screenshot_1.jpg"
+                      caption="overview, exploding pie chart"/>
+                <item thumb="resources/pgt/pgt_thumb_2.jpg"
+                      src="resources/pgt/pgt_screenshot_2.jpg"
+                      caption="zoomable performance graph"/>
+                <item thumb="resources/pgt/pgt_thumb_3.jpg"
+                      src="resources/pgt/pgt_screenshot_3.jpg"
+                      caption="portfolio drilldown"/>
+            </gallery>
+        </project--> 
+        <project id="ICT" label="index comparison tool"
+                 description="A financial application used to perform detailed comparison of indexes."
+                 color="0xCDEBF5" color2="0xCB6032" color3="0x996633">
+            <introscreen>
+                <copy>
+                    <text title="background"
+                          text="Barclay's International asked Laszlo Studios to create a new tool for financial analysts to compare different indexes. One of their main goals was to showcase their index correlation data which provided a unique way to understand relationships between indexes."/> 
+                    <text title="features"
+                          text="The application contains features such as dynamic filtering, animated sorting, and high fidelity printing of any page.  Via clever animations and transitions, the correlation matrix is an engaging way to explore the Barclay's unique index correlation data. There are numerous charts, graphs and tables displaying the large quantity of index data for easier comparison."/>
+                    <text title="roles" text="Technical Lead"/>
+                </copy>
+            </introscreen>
+            <gallery>
+                <item thumb="resources/ict/ict_thumb_1.jpg"
+                      src="resources/ict/ict_screenshot_1.jpg"
+                      caption="returns and risk chart"/>
+                <item thumb="resources/ict/ict_thumb_2.jpg"
+                      src="resources/ict/ict_screenshot_2.jpg"
+                      caption="correlation matrix"/>
+                <item thumb="resources/ict/ict_thumb_3.jpg"
+                      src="resources/ict/ict_screenshot_3.jpg"
+                      caption="detailed index comparison"/>
+                <item thumb="resources/ict/ict_thumb_4.jpg"
+                      src="resources/ict/ict_screenshot_4.jpg"
+                      caption="index summary"/>
+            </gallery>
+        </project> 
+        <project id="SRI" label="sri dashboard" color="0xE4FFD2" 
+                 description="A dashboard front end to a massive data-mining and artificial intelligence research project.">
+            <introscreen>
+                <copy>
+                    <text title="background"
+                          text="The Stanford Research Institute (SRI) received funding to embark on a multi-year artificial-intelligence and data-mining project.  The amount of data gathered as a result of the research was extensive but difficult to process by the average user. SRI asked Laszlo to develop a completely customizable dashboard front end to their huge database of information."/>
+                    <text title="features"
+                          text="Users can create compound searches for any sort of information avaiable in the database: people, files, dates, and object relationships. Search results appear in a window on the dashboard.  These windows can then be combined into 'containers' which can be nested infinitely.  The contents of windows can link to any other window, thus allowing the user to create relationships between multiple searches. This flexibility allows the users to build their own 'mini-applications' from custom groupings of functional units. "/>
+                    <text title="roles" text="Technical Lead"/>
+                </copy>
+            </introscreen>
+            <gallery>
+                <item src="resources/sri/sri_screenshot_1.jpg"
+                      caption="dashboard"/>
+            </gallery>
+        </project> 
+    </menu> 
+    <menu label="me">
+        <project id="BIO" label="bio" description="A little about me.">
+            <introscreen>
+                <text width="260" y="85" x="45" 
+                    text="I love things that are functional, logical, and beautiful, all at the same time. I love to make things: applications, books, Valentine day cards, berry pies.  My current passions are motorcycle racing (spectating only), geocaching, and Paris (sigh). I go shopping at malls, watch a lot of reality tv, especially America's Next Top Model, and am a homebody to the core.  "/>
+                <image height="360" width="228" x="390" y="-27"
+                       src="resources/bio/bio_screenshot_1.jpg"/>
+                <link text="CONTACT ME" y="225" x="246"
+                      to="mailto:ming@minglebee.com"/>
+                <link text="RÉSUMÉ" y="238" x="266"
+                      to="http://www.minglebee.com/resume"/>
+            </introscreen>
+        </project> 
+        <project id="RESUME" label="résumé"
+                 linkto="http://www.minglebee.com/resume"/>
+    </menu> 
+</minglebee>

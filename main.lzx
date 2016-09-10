@@ -1,0 +1,16 @@
+<canvas width="100%" height="100%" font="mbfont"
+        debug="true" proxied="false">
+    <debug x="0" y="0" width="100" height="100"/>
+
+    <include href="Minglebee.lzx"/>
+
+    <Minglebee id="gMinglebee" width="947" height="600"
+               x="${Math.round((canvas.width - this.width)/2)}"
+               y="${Math.round((canvas.height - this.height)/2)}">
+    </Minglebee>    
+    <!--splash persistent="true">
+        <view center="true"
+              resource="resources/splash.swf"/>
+    </splash-->
+
+</canvas>

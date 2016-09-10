@@ -1,0 +1,52 @@
+<library>
+
+    <!-- ============================
+         ==
+         == mbobjectpool
+         ==
+         ============================ -->
+    <class name="mbojectpool" extends="node">
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="objclassname" type="string"/>
+        <attribute name="pooledobjs" value="$once{[]}"/>
+
+        <attribute name="parentref" value="$once{parent}"/>
+        <attribute name="initargs" value="$once{{}}"/>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="getObj">
+            var obj = null;
+            if (this.pooledobjs.length) {
+                obj = this.pooledobjs.pop();
+                obj.setAttribute("visible", true);
+            } else {
+                obj = new global[this.objclassname](
+                    this.parentref, this.initargs);
+            }
+            return obj;
+        </method>
+        <!-- -->
+        <method name="returnObj" args="obj">
+            this.pooledobjs.push(item);
+        </method>
+        <!-- -->
+        <method name="returnAllObjs"><![CDATA[
+            var arr = [];
+            var sv = this.parentref.subviews;
+            for (var i = 0; i < sv.length; i++) {
+                if (sv[i] instanceof global[this.objclassname]) {
+                    this.pooledobjs.push(sv[i]);
+                    sv[i].setAttribute("visible", false);
+                }
+            }
+        ]]></method>
+
+    </class>
+
+
+</library>

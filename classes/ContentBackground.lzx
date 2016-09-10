@@ -1,0 +1,114 @@
+<library>
+
+    <!-- ============================
+         ==
+         == ContentBackground
+         ==
+         ============================ -->
+    <class name="ContentBackground" opacity=".6">
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <mbojectpool name="txtpool"
+                     objclassname="LzText"
+                     initargs="$once{{fgcolor: white, fontsize: 55,
+                               fontstyle: 'bold',
+                               rotation: 270, opacity: .7}}"/>
+                     
+        <!-- ====================
+             ====  ANIMATORS ====
+             ==================== -->
+        <animatorgroup name="goprojectanim" start="false"
+                       process="simultaneous" duration="500">
+            <handler name="onstop">
+                //classroot.category.animate("opacity", 1, 500);
+            </handler>
+            <animator attribute="x" to="85"/> 
+            <animator attribute="y" to="60"/> 
+            <animator attribute="width" to="${gMinglebee.width - 170}"/>
+            <animator attribute="height" to="${gMinglebee.height - 120}"/>
+            <animator attribute="opacity" to="1"/>
+        </animatorgroup>
+        <!-- -->
+        <animatorgroup name="gohomeanim" start="false"
+                       process="simultaneous" duration="500">
+            <handler name="onstart">
+                classroot.outline.setAttribute("color", 0x666666);
+            </handler>
+            <animator attribute="opacity" to=".6"/>
+            <animator attribute="width" 
+                      to="${gMinglebee.contents.title.text.width + 30}"/>
+            <animator attribute="height" 
+                      to="${gMinglebee.contents.title.text.height + 30}"/>
+            <animator attribute="x" 
+                      to="${gMinglebee.contents.title.x - 15}"/>
+            <animator attribute="y" 
+                      to="${gMinglebee.contents.title.y}"/>
+        </animatorgroup>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="ongoproject" reference="gMinglebee">
+            this.category.setAttribute("opacity", 0);
+            this.goprojectanim.doStart();
+            this.outline.setAttribute("color", 0xBBBBBB);
+        </handler>
+
+        <!-- -->
+        <handler name="onswitchproject" reference="gMinglebee">
+            this.initCategoryLabel();
+            this.colorbg.animate("opacity", 1, 1000);
+        </handler>
+
+        <!-- -->
+        <handler name="ongohome" reference="gMinglebee">
+            this.txtpool.returnAllObjs();
+        </handler>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="initCategoryLabel">
+            var menulabel = gMinglebee.currproj.parentmenulabel;
+            var chars = menulabel.split("");
+
+            this.txtpool.parentref = this.category;
+            this.txtpool.returnAllObjs();
+
+            var obj;
+            var ny = 0;
+            for (var i in chars) {
+                obj = this.txtpool.getObj();
+                obj.setAttribute("text", chars[i].toUpperCase());
+                obj.setAttribute("y", ny);
+
+                obj.setAttribute("opacity", gMinglebee.currproj.categoryopacity);
+                ny += obj.width - 30;
+            }            
+        </method>
+
+
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <!-- ====
+             Color BG
+             ==== -->
+        <view name="colorbg" width="100%" height="100%"
+              bgcolor="white"/>
+        <mbrectoutline name="outline" width="100%" height="100%"/>
+        
+        <!-- ====
+             Category label
+             ==== -->
+        <view name="category" x="${parent.width - this.width + 13}"
+              y="${classroot.height - this.height + 
+                 gMinglebee.currproj.parentmenuoffset}"
+              opacity="0">
+        </view>
+    </class>
+
+
+</library>

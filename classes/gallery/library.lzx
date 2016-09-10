@@ -1,0 +1,6 @@
+<library>
+
+    <include href="ProjectGallery.lzx"/>
+    <include href="GalleryThumb.lzx"/>
+
+</library>

@@ -1,0 +1,35 @@
+<library>
+
+    <!-- ============================
+         ==
+         == mbimage
+         ==
+         ============================ -->
+    <class name="mbimage">
+        
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="imageurl"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="onimageurl">
+            this.setAttribute("opacity", 0);
+            this.image.setSource(this.imageurl);
+        </handler>
+
+        <handler name="onload" reference="image">
+            this.animate("opacity", 1, 200);
+        </handler>
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <view name="image"/>
+        <mbrectoutline width="${classroot.image.width}" 
+                       height="${classroot.image.height}" color="0x999999"/>
+
+    </class>
+
+</library>

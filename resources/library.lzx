@@ -1,0 +1,103 @@
+<library>
+
+    <!-- ====
+         FONTS
+         ==== -->
+    <font name="mbfont">
+        <face src="fonts/EuphemiaCASRegular.ttf"/> 
+        <face style="bold" src="fonts/EuphemiaCASBold.ttf"/> 
+    </font>
+    <!--font name="mbsubfont">
+        <face src="fonts/arial.ttf"/>
+        <face style="bold" src="fonts/arialbd.ttf"/>
+    </font-->
+
+
+
+    <!-- ====
+         HOME
+         ==== -->
+    <resource name="RSC_HONEY_COMB" src="shared/comb_small.png"/>
+
+    <!--
+         Frames
+    -->
+    <resource name="RSC_JUMP_ALL" src="home/home.jpg"/>
+    <!--resource name="RSC_JUMP_FRAME_1" src="home/frame1.jpg"/>
+    <resource name="RSC_JUMP_FRAME_2" src="home/frame2.jpg"/>
+    <resource name="RSC_JUMP_FRAME_3" src="home/frame3.jpg"/>
+    <resource name="RSC_JUMP_FRAME_4" src="home/frame4.jpg"/>
+    <resource name="RSC_JUMP_FRAME_5" src="home/frame5.jpg"/>
+    <resource name="RSC_JUMP_FRAME_6" src="home/frame6.jpg"/>
+    <resource name="RSC_JUMP_FRAME_7" src="home/frame7.jpg"/>    
+    <resource name="RSC_JUMP_FRAME_8" src="home/frame8.jpg"/-->
+
+
+
+    <!-- ====
+         MOTOGP
+         ==== -->
+    <resource name="RSC_PREVIEW_MOTOGP" src="motogp/motogp_preview_small.jpg"/>
+
+    <!-- ====
+         RSS
+         ==== -->
+    <resource name="RSC_PREVIEW_RSS" src="rss/rss_preview_small.jpg"/>
+
+    <!-- ====
+         PHOTO SLAM
+         ==== -->
+    <resource name="RSC_PREVIEW_PHOTO_SLAM" src="motogp/motogp_preview_small.jpg"/>
+
+    <!-- ====
+         DAILY PHOTO
+         ==== -->
+    <resource name="RSC_PREVIEW_DAILY_PHOTOS" src="daily/daily_preview_small.jpg"/>
+
+    <!-- ====
+         MESSAGE BOARD
+         ==== -->
+    <resource name="RSC_PREVIEW_MESSAGE_BOARD" src="motogp/motogp_preview_small.jpg"/>
+
+    <!-- ====
+         FNAC
+         ==== -->
+    <resource name="RSC_PREVIEW_FNAC" src="fnac/fnac_preview_small.jpg"/>
+
+    <!-- ====
+         MFC
+         ==== -->
+    <resource name="RSC_PREVIEW_MFC" src="mfc/mfc_preview_small.jpg"/>
+
+    <!-- ====
+         MEEVEE
+         ==== -->
+    <resource name="RSC_PREVIEW_MEEVEE" src="meevee/meevee_preview_small.jpg"/>
+
+    <!-- ====
+         PGT
+         ==== -->
+    <!--resource name="RSC_PREVIEW_PGT" src="pgt/pgt_preview_small.jpg"/-->
+
+    <!-- ====
+         ICT
+         ==== -->
+    <resource name="RSC_PREVIEW_ICT" src="ict/ict_preview_small.jpg"/>
+
+    <!-- ====
+         SRI
+         ==== -->
+    <resource name="RSC_PREVIEW_SRI" src="sri/sri_preview_small.jpg"/>
+
+    <!-- ====
+         BIO
+         ==== -->
+    <resource name="RSC_PREVIEW_BIO" src="bio/bio_preview_small.jpg"/>
+
+    <!-- ====
+         RESUME
+         ==== -->
+    <resource name="RSC_PREVIEW_RESUME" src="resume/resume_preview_small.jpg"/>
+
+
+</library>

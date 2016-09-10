@@ -1,0 +1,88 @@
+<library>
+    <script><![CDATA[
+        /**
+         * Represents a rotation and a translation in 2D space.
+         */
+        // Constructor /////////////////////////////////////////////////////////
+        function Transform2D() {
+            this.location = new Vector2D();
+            this.cosAngle = 1;
+            this.sinAngle = 0;
+        }
+        
+        Transform2D.prototype = new Object();
+        Transform2D.prototype.constructor = Transform2D;
+        Object.registerClass("Transform2D", Transform2D);
+        
+        ////////////////////////////////////////////////////////////////////////
+        // Methods /////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        
+        // Setters /////////////////////////////////////////////////////////////
+        /**
+         * Sets the translation and rotation for this transform from the 
+         * provided Transform2D.
+         * @param t the Transform2D to copy from
+         * @return void
+         */
+        Transform2D.prototype.set = function(t) {
+            this.setTranslation(t.getLocation());
+            this.cosAngle = t.cosAngle;
+            this.sinAngle = t.sinAngle;
+        };
+        
+        /**
+         * Sets the translation for this transform.
+         * @param x the amount of the x translation.
+         * @param y the amount of the y translation.
+         * @return void
+         */
+        Transform2D.prototype.setTranslation = function(x, y) {
+            this.location = new Vector2D();
+            this.location.set(x, y);
+        };
+        
+        /**
+         * Sets the translation for this transform.
+         * @param v the translation Vector2D
+         * @return void
+         */
+        Transform2D.prototype.setTranslationFromVector = function(v) {
+            this.setTranslation(v.x, v.y);
+        };
+        
+        /**
+         * Sets the angle of rotation.
+         * @param a the angle of rotation in the z axis.
+         * @return void
+         */
+        Transform2D.prototype.setAngle = function(a) {
+            this.cosAngle = Math.cos(a);
+            this.sinAngle = Math.sin(a);
+        };
+        
+        // Getters /////////////////////////////////////////////////////////////
+        Transform2D.prototype.getLocation = function() {
+            return this.location;
+        };
+        
+        Transform2D.prototype.getCosAngle = function() {
+            return this.cosAngle;
+        };
+        
+        Transform2D.prototype.getSinAngle = function() {
+            return this.sinAngle;
+        };
+        
+        Transform2D.prototype.getAngle = function() {
+            return Math.atan2(this.sinAngle, this.cosAngle);
+        };
+        
+        // Transforms //////////////////////////////////////////////////////////
+        Transform2D.prototype.rotateAngle = function(a) {
+            if (a != 0) {
+                this.setAngle(this.getAngle() + a);
+            }
+        };
+    ]]></script>
+</library>

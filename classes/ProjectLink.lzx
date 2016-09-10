@@ -1,0 +1,59 @@
+<library>
+
+    <!-- ============================
+         ==
+         == ProjectLink
+         ==
+         ============================ -->
+    <class name="ProjectLink" extends="baselistitem"
+           align="right">
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="overcolor" value="${parent.classroot.overcolor}"/>
+        <attribute name="color" value="0x888888"/>
+        <attribute name="text" type="string"/>
+        <attribute name="displaytext" type="string"
+                   value="$once{this.text}"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="onclick" reference="link">
+            if (!this.selected) {
+                parent.select(this);
+            }
+        </handler>
+
+        <handler name="onselected">
+            if (this.selected) {
+                this.setAttribute("displaytext", "> " + this.text);
+                this.link.doMouseOver();
+            } else {
+                this.setAttribute("displaytext", this.text);
+                this.link.doMouseOut();
+            }
+        </handler>
+
+        <handler name="onovercolor">
+            if (this.selected) {
+                this.link.doMouseOver();
+            }
+        </handler>
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <mbtextlink name="link" text="${classroot.displaytext}"
+                    dobold="false" color="${classroot.color}" iscap="false"
+                    overcolor="${parent.overcolor}">
+            <method name="doMouseOut">
+                if (!classroot.selected) {
+                    super.doMouseOut();
+                }
+            </method>        
+        </mbtextlink>
+
+    </class>
+
+</library>

@@ -1,0 +1,185 @@
+<library>
+
+    <!-- ============================
+         ==
+         == Menu
+         ==
+         ============================ -->
+    <class name="Menu" fontsize="11">
+
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="checkmousedel"
+                   value="$once{new LzDelegate(this, 'checkMouse')}"/>
+
+        <attribute name="listwidth" value="100"/>
+        
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="ondata" args="d"><![CDATA[
+            var sv = this.rollover.menulist.subviews;
+            var max = null;
+            for (var i = 0; i < sv.length; i++) {
+                if (max == null || max < sv[i].link.width) {
+                    max = sv[i].link.width;
+                }
+            }
+            this.setAttribute("listwidth", max);
+        ]]></handler>
+
+
+        <!-- -->
+        <handler name="onmouseover" reference="heading">
+            this.rollover.setAttribute("visible", true);
+            this.heading.setAttribute("color", 0x333333);
+            this.checkmousedel.register(LzIdle, "onidle");            
+        </handler>
+
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="showProject" args="model">
+            this.rollover.setAttribute("visible", false);
+            this.checkmousedel.unregisterAll();
+
+            this.heading.setAttribute("color", 0x666666);
+
+            gMinglebee.showProject(model);
+        </method>
+
+        <!-- -->
+        <method name="checkMouse"><![CDATA[
+            var isflipped = this.rollover.flipped;
+            var isover = true;
+            
+            if (this.getMouse("y") > 15) {
+                if (isflipped) {
+                    var checkx = this.getMouse("x") + 
+                        (this.rollover.menulist.width - this.heading.width)
+                    var isoverx = checkx > 0 && 
+                        checkx < this.rollover.menulist.width
+                    isover = this.containsPt(1, this.getMouse("y")) && isoverx;
+                } else {
+                    isover = this.containsPt(this.getMouse("x"), 
+                        this.getMouse("y"));
+                }
+            } else {
+                isover = this.heading.containsPt(
+                     this.heading.getMouse("x"), this.heading.getMouse("y"));
+            }
+            if (!isover) {
+                this.rollover.setAttribute("visible", false);
+                this.checkmousedel.unregisterAll();
+
+                this.heading.setAttribute("color", 0x666666);
+                if (gMinglebee.ishome) {
+                    gHome.hidePreview();
+                }
+            }
+        ]]></method>
+        
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <view name="rollover" visible="false">
+            <attribute name="drawbg" value="true"/>
+            <attribute name="flipped" value="false"/>
+            <handler name="onvisible"><![CDATA[
+                if (visible) {
+                    var needflip = 
+                        this.menulist.width + 
+                        classroot.getAttributeRelative("x", gMinglebee.contents) + 10 >
+                        gMinglebee.width;
+                    if (this.drawbg || needflip != this.flipped) {
+                        this.flipped = needflip;
+                        this.bg.draw();
+                        this.drawbg = false;
+                    }
+                }
+            ]]></handler>
+            <!-- ====
+                 Background
+                 ==== -->
+            <drawview name="bg" x="-10" y="-3">
+                <method name="draw">
+                    var totalheight = 
+                        parent.menulist.y + parent.menulist.height;
+                    var heading = classroot.heading;
+
+                    this.clear();
+                    this.beginPath();
+                    if (parent.flipped) {
+                        parent.menulist.setAttribute("x", 
+                            heading.width - parent.menulist.width);
+                        parent.menulist.setAttribute("x", leftedge);
+
+                        var leftedge = heading.width + 20;
+                        var rightedge = leftedge - parent.menulist.width - 20;
+                        this.moveTo(0, 0);
+                        this.lineTo(leftedge, 0);
+                        this.lineTo(leftedge, totalheight + 10);
+                        this.lineTo(rightedge, totalheight + 10);
+                        this.lineTo(rightedge, 25);
+                        this.lineTo(0, 25);
+                        this.lineTo(0, 0);
+                    } else {
+                        parent.menulist.setAttribute("x", 0);
+                        parent.rollover.setAttribute("x", 0);
+                        this.lineTo(heading.width + 20, 0);
+                        this.lineTo(heading.width + 20, 25);
+                        this.lineTo(classroot.width + 20, 25);
+                        this.lineTo(classroot.width + 20, totalheight + 10);
+                        this.lineTo(0, totalheight + 10);
+                        this.lineTo(0, 0);
+                    }
+                    
+                    this.fillStyle = white;
+                    this.globalAlpha = .7;
+                    this.fill();
+                    
+                    this.strokeStyle = 0x666666;
+                    this.globalAlpha = .8;
+                    this.stroke();
+                </method>
+            </drawview>
+            <!-- ====
+                 Menu list
+                 ==== -->
+            <view y="30" name="menulist" width="${classroot.listwidth}">
+                <simplelayout axis="y" spacing="2"/>
+                <mbtextlink datapath="project" text="$path{'@label'}"
+                            width="100%">
+                    <ProjectModel name="model"/>
+                    <handler name="ondata" args="d">
+                        this.model.datapath.setPointer(d);
+                    </handler>
+                    <handler name="onmouseover">
+                        if (gMinglebee.ishome) {
+                            gHome.showPreview(this.model);
+                        }
+                    </handler>
+                    <handler name="onclick">
+                        if (datapath.p.attributes["linkto"]) {
+                            LzBrowser.loadURL(datapath.p.attributes.linkto,
+                                "minglebeewindow");
+                        } else {
+                            classroot.showProject(this.model);
+                        }
+                    </handler>
+                </mbtextlink>
+            </view>
+        </view>
+
+        <!-- ====
+             Menu header
+             ==== -->
+        <mbtextlink name="heading" fontstyle="bold"
+                    text="$path{'@label'}"/>
+
+    </class>
+
+</library>

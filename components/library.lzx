@@ -1,0 +1,10 @@
+<library>
+
+    <include href="mbrectoutline.lzx"/>
+    <include href="mbtextlink.lzx"/>
+    <include href="mbimage.lzx"/>
+
+    <include href="mbobjectpool.lzx"/>
+    <include href="mbeventgroup.lzx"/>
+
+</library>

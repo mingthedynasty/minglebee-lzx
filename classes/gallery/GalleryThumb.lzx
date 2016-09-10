@@ -1,0 +1,65 @@
+<library>
+
+    <!-- ============================
+         ==
+         == GalleryThumb
+         ==
+         ============================ -->
+    <class name="GalleryThumb" extends="baselistitem" 
+           width="60" height="60" focusable="false" clickable="true"
+           opacity="0" showhandcursor="false">
+        
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="gallery" value="$once{parent.classroot}"/>
+        <attribute name="caption"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="ondata" args="d">
+            this.contents.image.setSource(d.attributes.thumb);
+            this.caption = d.attributes.caption;
+
+            if (d.getOffset() == 0) {
+                parent.select(this);
+                gallery.showImage(this);
+            }
+        </handler>
+
+        <handler name="onmouseover">
+            if (!this.selected) {
+                parent.select(this);
+                gallery.showImage(this);
+            }
+        </handler>
+
+        <handler name="onload" reference="this.contents.image">
+            this.animate("opacity", 1, 200);
+        </handler>
+
+
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <view name="contents">
+            <!--view bgcolor="${classroot.gallery.selcolor}" 
+                  width="$once{classroot.width + 3}" 
+                  height="$once{classroot.height + 2}"
+                  visible="${classroot.selected}" x="-1" y="-1"/-->
+            <view name="image" width="${classroot.width}"
+                  height="${classroot.height}" stretches="both"/>
+            <view width="${classroot.width}" height="${classroot.height}" 
+                  visible="${!classroot.selected}" bgcolor="0xCCCCCC"
+                  opacity=".4"/>
+            <mbrectoutline width="${classroot.width}" 
+                           height="${classroot.height}"
+                           linewidth="${classroot.selected ? 2 : 1}"
+                           color="${classroot.selected ? 
+                                  classroot.gallery.selcolor : 0x999999}"/>
+        </view>
+
+    </class>
+
+</library>

@@ -1,0 +1,181 @@
+<library>
+
+    <!-- ============================
+         ==
+         == IntroScreen
+         ==
+         ============================ -->
+    <class name="IntroScreen" visible="false"
+           width="${gMinglebee.contents.bg.width}"
+           height="${gMinglebee.contents.bg.height}"
+           x="${gMinglebee.contents.bg.x}" y="${gMinglebee.contents.bg.y}">
+
+        <datapath/>
+        <ProjectModel name="model"/>
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="realopacity" value="0"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="onfinish" reference="gMinglebee.toprojectanim">
+            this.animate("realopacity", 1, 500);
+            this.setAttribute("visible", true);
+        </handler>
+        <handler name="onswitchproject" reference="gMinglebee">
+            gGallery.datapath.setPointer(gMinglebee.currproj.datapath.p);
+            gGallery.showImage(0);
+            this.setAttribute("realopacity", 0);
+            if (!gMinglebee.ishome) {
+                this.animate("realopacity", 1, 500);
+            }
+            this.header.demo.setAttribute("visible", 
+                gMinglebee.currproj.demolink != null);
+
+            this.datapath.setPointer(gMinglebee.currproj.getIntroData());
+            this.header.title.setAttribute("text", 
+                gMinglebee.currproj.category + " : " + 
+                datapath.p.parentNode.attributes.label);
+        </handler>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <!-- -->
+        <method name="showNextProject">
+Debug.write(gMinglebee.currproj.dnnext);
+            this.model.datapath.setPointer(gMinglebee.currproj.dnnext);
+            gMinglebee.showProject(this.model);
+        </method>
+        <!-- -->
+        <method name="showPrevProject">
+            this.model.datapath.setPointer(gMinglebee.currproj.dnprev);
+            gMinglebee.showProject(this.model);
+        </method>
+        <!-- -->
+        <method name="showDemo">
+            LzBrowser.loadURL(gMinglebee.currproj.demolink, 
+                "minglebeewindow");
+        </method>
+
+     
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <!-- ====
+             Header
+             ==== -->
+        <view name="header" x="${classroot.contents.x}" y="30"
+              width="651">
+            <text name="title" fontsize="18" fgcolor="0x333333"
+                  resize="true" x="${parent.cat.width}"/>            
+            <mbtextlink name="demo" fontstyle="bold" align="right"
+                        text="LIVE DEMO >" dobold="false" iscap="false" 
+                        fontsize="10" onclick="classroot.showDemo()"
+                        y="${Math.round((parent.title.height - this.height))}"
+                        color="${gMinglebee.currproj.accentcolor}"
+                        overcolor="0x666666"/>
+        </view>
+
+        <view name="contents" y="90" height="380" width="651" font="Verdana"
+              x="${Math.round((classroot.width - this.width)/2)}">
+            <simplelayout axis="x" spacing="50"/>
+            <!-- ====
+                 Copy
+                 ==== -->
+            <view datapath="copy">
+                <simplelayout axis="y" spacing="20"/>
+                <view datapath="text">
+                    <text datapath="@title" width="80"
+                          fgcolor="0x999999" multiline="true"
+                          resize="true" fontsize="9"/>
+                    <text x="80" width="260" multiline="true" text="$path{'@text'}"
+                          fgcolor="0x333333" fontsize="11">
+                        <handler name="ontext"><![CDATA[                        
+                            this.setAttribute("text", 
+                                "<p align='justify'>" + text + "</p>");                        
+                        ]]></handler>
+                    </text>
+                    
+                </view>
+            </view>
+            <!-- ====
+                 Gallery
+                 ==== -->
+            <ProjectGallery id="gGallery"
+                            y="${Math.round((parent.height - this.height)/2) - 40}"/>
+            <!-- ====
+                 Extras
+                 ==== -->
+            <view options="ignorelayout">
+                <text fgcolor="0x333333" multiline="true" fontsize="11" id="p">
+                    <datapath xpath="text" pooling="true"/>
+                    <handler name="ondata" args="d"><![CDATA[
+                        this.setAttribute("text", 
+                            "<p align='justify'>" + d.attributes.text + "</p>");
+                        this.setAttribute("width", Number(d.attributes.width));
+                        this.setAttribute("x", Number(d.attributes.x));
+                        this.setAttribute("y", Number(d.attributes.y));
+                    ]]></handler>
+                </text>
+                <view>
+                    <datapath xpath="image" pooling="true"/>
+                    <handler name="ondata" args="d">
+                        this.setAttribute("opacity", 0);
+                        this.image.setSource(d.attributes.src);
+                        this.setAttribute("width", Number(d.attributes.width));
+                        this.setAttribute("height", Number(d.attributes.height));
+                        this.setAttribute("x", Number(d.attributes.x));
+                        this.setAttribute("y", Number(d.attributes.y));
+                    </handler>
+                    <handler name="onload" reference="this.image">
+                        this.animate("opacity", 1, 500);
+                    </handler>
+                    <view name="image" width="100%" height="100%" stretches="both"/>
+                    <mbrectoutline name="outline" color="0x999999"
+                                   width="100%" height="100%"/>                    
+                </view>
+                <mbtextlink dobold="false" color="0xAAAAAA" overcolor="0x333333"
+                            iscap="false" fontsize="8" font="Verdana">
+                    <datapath xpath="link" pooling="true"/>
+                    <handler name="ondata" args="d">
+                        this.setAttribute("text", d.attributes.text);                        
+                        this.setAttribute("x", Number(d.attributes.x));
+                        this.setAttribute("y", Number(d.attributes.y));
+                    </handler>
+                    <handler name="onclick">
+                        LzBrowser.loadURL(datapath.p.attributes.to);
+                    </handler>
+                </mbtextlink>
+            </view>
+        </view>
+
+        <!-- ====
+             Back/Forward
+             ==== -->
+        <view name="nav" y="${classroot.height - this.height - 5}"
+              x="${classroot.width - this.width - 15}">
+            <simplelayout axis="x" spacing="10"/>
+            <mbtextlink name="prev"
+                        text="PREV" dobold="false" x="22"
+                        fontsize="10"
+                        onclick="classroot.showPrevProject()"/>
+            <view bgcolor="0x666666" width="1" height="10" y="2"/>
+            <mbtextlink name="next"
+                        text="NEXT" dobold="false"
+                        fontsize="10"
+                        onclick="classroot.showNextProject()"/>
+        </view>
+
+        <!-- ====
+             Fake fade
+             ==== -->
+        <view name="fauxfade" opacity="${1 - classroot.realopacity}"
+                   width="${classroot.width - 6}" height="${classroot.height - 6}" 
+                   bgcolor="white" x="3" y="3" options="ignorelayout"/>
+    </class>
+
+</library>

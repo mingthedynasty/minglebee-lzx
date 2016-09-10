@@ -1,0 +1,42 @@
+<library>
+
+    <!-- ============================
+         ==
+         == mbrectoutline
+         ==
+         ============================ -->
+    <class name="mbrectoutline" extends="drawview">
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="color" value="0x666666"/>
+        <attribute name="redrawdel"
+                   value="$once{new LzDelegate(this, 'redraw')}"/>
+        <attribute name="linewidth" value="1"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="oninit">
+            this.redraw();
+            this.redrawdel.register(this, "onwidth");
+            this.redrawdel.register(this, "onheight");
+            this.redrawdel.register(this, "oncolor");
+            this.redrawdel.register(this, "onlinewidth");
+        </handler>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="redraw">
+            this.clear();
+            this.beginPath();
+            
+            gMDrawingUtil.drawRect(this, 0, 0, 
+                this.width, this.height,
+                null, new MStroke(1, this.color, this.linewidth));
+        </method>
+    </class>
+
+</library>

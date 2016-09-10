@@ -1,0 +1,40 @@
+<library>
+    <script><![CDATA[
+        /**
+         * A collection of math utility functions.
+         */
+        function MathUtil() {}
+        
+        MathUtil.prototype = new Polygon2D();
+        MathUtil.prototype.constructor = MathUtil;
+        Object.registerClass("MathUtil", MathUtil);
+        
+        
+        ////////////////////////////////////////////////////////////////////////
+        // METHODS /////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * Converts an angle in degrees to an angle in radians.
+         * @param deg the angle in degrees.
+         * @return the angle in radians.
+         */
+        MathUtil.prototype.convertToRadians = function(deg) {
+            return (Math.PI / 180) * deg;
+        }
+         
+        /**
+         * Converts an angle in radians to an angle in degrees.
+         * @param rad the angle in radians.
+         * @return the angle in degrees.
+         */
+        MathUtil.prototype.convertToDegrees = function(rad) {
+            return (180 / Math.PI) * rad;
+        }
+    ]]></script>
+    
+    
+    <!-- INITIALIZATION -->
+    <script>
+        var gMathUtil = new MathUtil();
+    </script>
+</library>

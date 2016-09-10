@@ -1,0 +1,106 @@
+<library>
+
+    <!-- ============================
+         ==
+         == ProjectGallery
+         ==
+         ============================ -->
+    <class name="ProjectGallery">
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <datapath/>
+
+        <attribute name="selcolor"/>
+
+        <selectionmanager name="selman"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="ondata" args="d">
+            this.selman.clearSelection();
+            this.setAttribute("opacity", 0);
+            this.selcolor = gMinglebee.currproj.accentcolor;
+
+            var thumbcount = datapath.xpathQuery("gallery/item").length;
+            var rows = Math.ceil(thumbcount/4);
+            this.radio.setAttribute("height", rows * 60 + (rows - 1) * 7);                
+        </handler>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="showImage" args="thumb">
+        
+            var image;
+            if (thumb) {
+               image = this.zoom.subviews[thumb.datapath.p.getOffset()];
+            } else {
+               image = this.zoom.subviews[0];
+            }
+
+            this.outline.setAttribute("width", image.width);
+            this.outline.setAttribute("height", image.height);
+
+            this.selman.select(image);
+            this.caption.setAttribute("text", image.datapath.p.attributes.caption);
+        </method>
+
+        <!-- -->
+        <method name="updateForLoad" args="resourceview">
+            var nsize = gUtils.getImageTargetSizeInRect(resourceview, 261, 200);            
+            resourceview.setAttribute("width", nsize.w);
+            resourceview.setAttribute("height", nsize.h);
+
+            this.animate("opacity", 1, 500);
+
+            if (resourceview = this.zoom.subviews[0]) {
+                this.outline.setAttribute("width", resourceview.width);
+                this.outline.setAttribute("height", resourceview.height);
+            }
+        </method>
+
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <!-- ====
+             Caption
+             ==== -->
+        <text name="caption" resize="true" fgcolor="0x444444"
+              fontsize="9" x="${classroot.zoom.x}"/>
+
+        <!-- ====
+             Image
+             ==== -->
+        <view name="zoom" y="15" 
+              x="${Math.round((261 - this.width)/2)}">
+            <view datapath="gallery/item" stretches="both" visible="false">
+                <handler name="ondata" args="d">
+                    this.setAttribute("visible", false);
+                    this.setSource(d.attributes.src);
+                </handler>
+                <handler name="onload">
+                    classroot.updateForLoad(this);
+                </handler>
+                <method name="setSelected" args="issel">
+                    this.setAttribute("visible", issel);
+                </method>
+            </view>
+        </view>
+        <mbrectoutline name="outline" color="0x999999"
+                       x="${classroot.zoom.x}" y="15"/>
+
+        <!-- ====
+             Thumbnails
+             ==== -->
+        <radiogroup name="radio" width="261"
+                    layout="class:wrappinglayout; axis: x; spacing:7"
+                    y="${classroot.zoom.height + classroot.zoom.y + 15}">
+            <GalleryThumb datapath="gallery/item"/>
+        </radiogroup>
+        
+    </class>
+
+</library>

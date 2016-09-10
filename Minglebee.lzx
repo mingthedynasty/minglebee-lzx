@@ -1,0 +1,255 @@
+<library>
+
+    <include href="drawingutils"/>
+    <include href="resources"/>
+    <include href="components"/>
+    <include href="models"/>
+    <include href="classes"/>
+
+    <!-- ====
+         Datasets
+         ==== -->
+    <dataset name="dsstructure" src="data/structure.xml"/>
+
+    <!-- ============================
+         ==
+         == Minglebee
+         ==
+         ============================ -->
+    <class name="Minglebee" bgcolor="white">
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <ProjectModel name="currproj"/>
+        <attribute name="ishome" value="true"/>
+
+        <event name="ongohome"/>
+        <event name="ongoproject"/>
+        <event name="onswitchproject"/>
+
+        <mbanimationgroup name="toprojectanim"/>
+        <mbanimationgroup name="fadenavanim"/>
+        <mbanimationgroup name="fadeintroanim"/>
+        <mbanimationgroup name="tohomeanim"/>
+        <mbanimationgroup name="finishtoprojectanim"/>
+
+
+        <Utils id="gUtils"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="oninit">
+            gHome.animate("opacity", 1, 600);
+            this.contents.outline.animate("opacity", 1, 600);
+        </handler>
+
+        <handler name="onfinish" reference="this.fadenavanim"><![CDATA[
+            //title
+            var title = this.contents.title;            
+            title.setAttribute("x", 3);
+            title.setAttribute("y", -33);
+
+            title.setAttribute("width", 58);
+            title.setAttribute("height", 58);
+
+            var anim = title.animate("opacity", 1, 200);
+            this.finishtoprojectanim.addAnim(anim);
+
+            //menu            
+            var menu = this.contents.menu;
+
+            menu.setAttribute("y", -menu.height);
+            menu.setAttribute("x", this.width - menu.width - 3);
+        ]]></handler>
+        <handler name="onfinish" reference="finishtoprojectanim">
+            this.contents.menu.setAttribute("opacity", 1);
+        </handler>
+
+        <handler name="onfinish" reference="this.fadeintroanim">
+            var anim;
+
+            //show title
+            var title = this.contents.title;
+            title.setAttribute("width", 100);
+            title.setAttribute("height", 100);
+            title.setAttribute("x", 
+                Math.round((777 - title.text.width)/2));
+            title.setAttribute("y", 
+                Math.round((492 - title.text.height)/2) - 20);
+
+            anim = title.animate("opacity", 1, 1000);            
+            this.tohomeanim.addAnim(anim);
+            this.contents.titlebg.animate("opacity", 1, 1000);
+
+
+            //deal with screen and background
+            this.contents.bg.gohomeanim.doStart();
+            gProjectScreen.setAttribute("visible", false);
+
+            this.contents.animate("width", 777, 500);
+            this.contents.animate("height", 492, 500);
+            this.contents.animate("y", 54, 500);
+
+            //show background bits
+            gHome.hidePreview();
+            //gHome.currscreen.bg.animate("opacity", 1, 200);
+            //gHome.currscreen.info.animate("opacity", 1, 1000);   
+
+            //show menu
+            var menu = this.contents.menu;
+            menu.setAttribute("x", title.x);
+            menu.setAttribute("y", title.y + 10 + title.text.height);
+            //this.contents.menu.animate("opacity", 1, 1000);
+            //this.tohomeanim.addAnim(anim);
+        </handler>
+
+        <!-- -->
+        <handler name="onfinish" reference="this.tohomeanim">
+            this.currproj.datapath.setPointer(null);
+            this.setAttribute("ishome", true);
+            this.contents.menu.setAttribute("opacity", 1);
+        </handler>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="showProject" args="model"><![CDATA[
+            var currd = null;
+            if (this.currproj["datapath"]) {
+                currd = this.currproj.datapath.p;
+            }
+            if (!model || model.datapath.p == currd) { 
+                return; 
+            }               
+
+            if (currd) {
+                gHome.showPreview(model);
+            } else {
+                var anim;
+
+                //fade titlebg
+                this.contents.titlebg.animate("opacity", 0, 200);
+
+                //fade navigation
+                anim = this.contents.title.animate("opacity", 0, 200);
+                this.contents.menu.setAttribute("opacity", 0);
+
+                //fade background bits
+                anim = gHome.currscreen.info.animate("opacity", 0, 200);
+                this.fadenavanim.addAnim(anim);
+                gHome.currscreen.bg.animate("opacity", .4, 200);
+
+                this.toprojectanim.addAnim(this.contents.bg.goprojectanim);
+                this.ongoproject.sendEvent();
+
+                this.contents.animate("width", 947, 500);
+                this.contents.animate("height", 600, 500);
+
+                this.contents.animate("y", 20, 500);
+            } 
+                
+            this.currproj.datapath.setPointer(model.datapath.p);
+            this.onswitchproject.sendEvent();
+
+            this.setAttribute("ishome", false);
+        ]]></method>
+
+        <!-- -->
+        <method name="showHome">
+            this.ongohome.sendEvent();            
+
+            this.contents.title.animate("opacity", 0, 200);
+            this.contents.menu.animate("opacity", 0, 200);
+            var anim = gProjectScreen.animate("realopacity", 0, 300);
+            fadeintroanim.addAnim(anim);
+            return;
+        </method>
+
+
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <view name="contents" y="54"  width="777" height="492"
+              x="${Math.round((parent.width - this.width)/2)}">
+
+            <Home id="gHome" opacity="0"/>
+
+            <!-- ====
+                 Honey comb
+                 ==== -->
+            <view resource="RSC_HONEY_COMB"/>
+
+            <!-- ====
+                 Outline
+                 ==== -->
+            <mbrectoutline name="outline" width="${Math.round(parent.width)}"
+                           height="${Math.round(parent.height)}" opacity="0"/>
+            <!-- ====
+                 Contact me
+                 ==== -->
+            <mbtextlink align="right" y="${parent.height + 2}" 
+                        opacity="${parent.opacity}" text="CONTACT ME" fontsize="9" 
+                        color="0x999999" overcolor="0x333333" dobold="false">
+                <handler name="onclick">
+                    LzBrowser.loadURL("mailto:ming@minglebee.com");
+                </handler>
+            </mbtextlink>
+
+            <!-- ====
+                 Content Background
+                 ==== -->
+            <ContentBackground name="bg" id="bg">
+                <state apply="${classroot.ishome}">
+                    <attribute name="width" value="${parent.title.text.width + 30}"/>
+                    <attribute name="height" value="${parent.title.text.height + 30}"/>
+                    <attribute name="x" value="${parent.title.x - 15}"/>
+                    <attribute name="y" value="${parent.title.y}"/>
+                </state>
+            </ContentBackground>
+
+            <!-- ====
+                 Title
+                 ==== -->
+            <view name="titlebg" bgcolor="white" opacity="1"
+                  width="${parent.bg.width - 10}"
+                  height="${parent.title.text.height}"
+                  x="${parent.bg.x + 5}" y="${parent.bg.y + 5}">
+            </view>
+            <view name="title" fontsize="38" id="title"
+                  width="100" height="100"
+                  x="$once{Math.round((parent.width - 189)/2)}"
+                  y="$once{Math.round((parent.height - this.text.height)/2) - 20}"
+                  stretches="both">
+                <mbtextlink name="text" text="mingle.bee" dobold="false" font="mbfont"
+                            clickable="${!classroot.ishome}"
+                            onclick="classroot.showHome()" oninit="Debug.write(width, height)"/>
+
+            </view>
+
+            <!-- ====
+                 Intro Screen
+                 ==== -->
+            <IntroScreen id="gProjectScreen" 
+                        x="${Math.round(classroot.width - this.width)/2}"/>
+                
+
+            <!-- ====
+                 Menus
+                 ==== -->
+            <MenuBar name="menu" width="${parent.title.text.width}">            
+                <state apply="${classroot.ishome}">
+                    <attribute name="x" value="${parent.title.x}"/>
+                    <attribute name="y" 
+                               value="${parent.title.y + 5 +
+                                      parent.title.text.height + 5}"/>
+                </state>
+            </MenuBar>
+
+        </view>
+
+
+    </class>
+
+</library>

@@ -1,0 +1,64 @@
+<library>
+
+
+    <!-- ============================
+         ==
+         == mbeventgroup
+         ==
+         ============================ -->
+    <class name="mbeventgroup" extends="node">
+
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="eventcount" value="0"/>
+        <attribute name="checkfinisheventsdel" 
+                   value="$once{new LzDelegate(this, 'checkFinishEvents')}"/>
+
+        <event name="onfinish"/>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="addEvent" args="source, event">
+            this.checkfinisheventsdel.register(source, event);
+            this.eventcount = this.eventcount + 1;
+        </method>
+
+        <!-- -->
+        <method name="checkFinishEvents">
+            this.eventcount = this.eventcount - 1;
+            if (this.eventcount == 0) {
+                this.checkfinisheventsdel.unregisterAll();
+                this.eventcount = 0;
+                this.onfinish.sendEvent();
+            }            
+        </method>
+
+        <!-- -->
+        <method name="reset">
+            this.eventcount = 0;
+        </method>
+
+
+    </class>
+
+
+    <!-- ============================
+         ==
+         == mbanimationgroup
+         ==
+         ============================ -->
+    <class name="mbanimationgroup" extends="mbeventgroup">
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="addAnim" args="anim">
+            this.addEvent(anim, "onstop");
+        </method>
+
+    </class>
+
+</library>

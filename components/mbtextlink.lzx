@@ -1,0 +1,75 @@
+<library>
+
+    <!-- ============================
+         ==
+         == mbtextlink
+         ==
+         ============================ -->
+    <class name="mbtextlink" font="Arial">
+        
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="text" type="string" value=""/>
+        <attribute name="iscap" value="true"/>
+        <attribute name="dobold" value="true"/>
+
+        <attribute name="color" value="0x666666"/>
+        <attribute name="overcolor" value="0x333333"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="oninit">
+            this.link.setAttribute("text", this.text);
+            this.link.setAttribute("fgcolor", color);
+        </handler>
+
+        <handler name="ontext"><![CDATA[
+            if (this.iscap && this.text) { 
+                this.text = this.text.toUpperCase();
+            }
+            this.link.setAttribute("text", this.text);            
+        ]]></handler>
+
+        <handler name="oncolor">
+            this.link.setAttribute("fgcolor", color);
+        </handler>
+        <handler name="onovercolor">
+            if (this.containsPt(this.getMouse("x"), this.getMouse("y"))) {
+                this.doMouseOver();
+            }
+        </handler>
+        <handler name="onmouseover">
+            this.doMouseOver();
+        </handler>
+
+        <handler name="onmouseout">
+            this.doMouseOut();
+        </handler>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="doMouseOver"><![CDATA[
+            if (this.dobold) {
+                this.link.setAttribute("text", 
+                    "<b>" + this.text + "</b>");
+            }
+            this.link.setAttribute("fgcolor", overcolor);
+        ]]></method>
+
+        <method name="doMouseOut">
+            this.link.setAttribute("text", this.text);
+            this.link.setAttribute("fgcolor", color);
+        </method>
+
+
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <text name="link" resize="true"/>
+
+    </class>
+
+</library>

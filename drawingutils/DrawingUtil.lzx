@@ -1,0 +1,617 @@
+<library>
+    <!-- INCLUDES -->
+    <include href="math/Vector2D.lzx"/>
+    <include href="math/Polygon2D.lzx"/>
+    <include href="math/Transform2D.lzx"/>
+    <include href="math/MathUtil.lzx"/>
+
+    <!-- CONSTANTS -->
+    <script>
+        var MD_DROP_SHADOW_COLOR = 0x000000;
+        var MD_DROP_SHADOW_INTENSITY = 0.5;
+    </script>
+
+    <!-- Fix for arc function -->
+    <script><![CDATA[
+        var D_TO_R = Math.PI/180;
+        var R_TO_D = 180/Math.PI;
+
+        LzDrawView.prototype.arc = function(x, y, radius, startAngle, endAngle, clockwise) {
+
+            var sx = x + radius*Math.cos(startAngle);
+            var sy = y + radius*Math.sin(2 * Math.PI - startAngle);
+
+        	startAngle *= 180/Math.PI;
+        	endAngle *= 180/Math.PI;
+            var arc = clockwise == true ? startAngle - endAngle : endAngle - startAngle;
+
+        	this.moveTo(sx, sy);
+
+            return this._drawArc(x, y, radius, arc, startAngle);
+        }
+
+        LzDrawView.prototype._drawArc = function(x, y, radius, arc, startAngle, yRadius){
+            if (arguments.length<5) {
+                return;
+            }
+            // if yRadius is undefined, yRadius = radius
+            if (yRadius == undefined) {
+                yRadius = radius;
+            }
+            // Init vars
+            var segAngle, theta, angle, angleMid, segs,bx, by, cx, cy;
+            // no sense in drawing more than is needed :)
+            if (Math.abs(arc)>360) {
+                arc = 360;
+            }
+            // Flash uses 8 segments per circle, to match that, we draw in a maximum
+            // of 45 degree segments. First we calculate how many segments are needed
+            // for our arc.
+            segs = Math.ceil(Math.abs(arc)/45);
+            // Now calculate the sweep of each segment
+            segAngle = arc/segs;
+            // The math requires radians rather than degrees. To convert from degrees
+            // use the formula (degrees/180)*Math.PI to get radians. 
+            theta = -(segAngle/180)*Math.PI;
+            // convert angle startAngle to radians
+            angle = -(startAngle/180)*Math.PI;
+
+            // if our arc is larger than 45 degrees, draw as 45 degree segments
+            // so that we match Flash's native circle routines.
+            if (segs>0) {
+                // Loop for drawing arc segments
+                for (var i = 0; i<segs; i++) {
+                    // increment our angle
+                    angle += theta;
+                    // find the angle halfway between the last angle and the new
+                    angleMid = angle-(theta/2);
+                    // calculate our end point
+                    bx = x+Math.cos(angle)*radius;
+                    by = y+Math.sin(angle)*yRadius;
+                    // calculate our control point
+                    cx = x+Math.cos(angleMid)*(radius/Math.cos(theta/2));
+                    cy = y+Math.sin(angleMid)*(yRadius/Math.cos(theta/2));
+                    // draw the arc segment
+                    this.quadraticCurveTo(cx, cy, bx, by);
+                }
+            }
+            // In the native draw methods the user must specify the end point
+            // which means that they always know where they are ending at, but
+            // here the endpoint is unknown unless the user calculates it on their 
+            // own. Lets be nice and let save them the hassle by passing it back. 
+            return {x:bx, y:by};
+
+        }
+    ]]></script>
+
+
+    <!-- CLASSES -->
+    <script><![CDATA[
+        ////////////////////////////////////////////////////////////////////////
+        // CLASS: MStroke //////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * The criteria used to draw a path in 2-space. Composed of a
+         * transparency (alpha) value a color and a line thickness.
+         */
+        function MStroke(alpha, color, thickness) {
+            this.alpha = (alpha != null) ? alpha : 1;
+            this.color = (color != null) ? color : 0x000000;
+            this.thickness = (thickness != null) ? thickness : 0;
+        }
+
+        MStroke.prototype = new Object();
+        MStroke.prototype.constructor = MStroke;
+        Object.registerClass("MStroke", MStroke);
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // CLASS: MFill ////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * The fill criteria for a closed path in 2-space. Composed of a
+         * transparency (alpha) value and a fill which can be either a color or
+         * an LzCanvasGradient.
+         */
+        function MFill(alpha, fill) {
+            this.alpha = (alpha != null) ? alpha : 1;
+            this.fill = (fill != null) ? fill : 0xcccccc;
+        }
+
+        MFill.prototype = new Object();
+        MFill.prototype.constructor = MFill;
+        Object.registerClass("MFill", MFill);
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // CLASS: MDimension ///////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * An extent in 2-space. Composed of a width and a height.
+         */
+        function MDimension(width, height) {
+            this.width = (width != null) ? width : 0;
+            this.height = (height != null) ? height : 0;
+        }
+
+        MDimension.prototype = new Object();
+        MDimension.prototype.constructor = MDimension;
+        Object.registerClass("MDimension", MDimension);
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // CLASS: MPoint ///////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * A single point in 2-space. Composed of an x and y value.
+         */
+        function MPoint(x, y) {
+            this.x = (x != null) ? x : 0;
+            this.y = (y != null) ? y : 0;
+        }
+
+        MPoint.prototype = new Vector2D();
+        MPoint.prototype.constructor = MPoint;
+        Object.registerClass("MPoint", MPoint);
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // CLASS: MPath ////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * An ordered collection of points in 2-space.
+         */
+        function MPath(closed) {
+            this._closed = (closed != null) ? closed : true;
+            this._vectors = new Array();
+        }
+
+        MPath.prototype = new Polygon2D();
+        MPath.prototype.constructor = MPath;
+        Object.registerClass("MPath", MPath);
+
+        ////////////////////////////////////////////////////////////////////////
+        // Methods /////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * Rotates this MPath around the origin by the specified angle. Positive
+         * angles correspond to clockwise rotations.
+         * @param a the angle in degrees
+         */
+        MPath.prototype.rotate = function(a) {
+            var t = new Transform2D();
+            t.setAngle(gMathUtil.convertToRadians(a));
+            this.addRotation(t);
+        }
+
+        /**
+         * Shifts this MPath by the provided x and y values.
+         * @param x the translation in the x direction.
+         * @param y the translation in the y direction.
+         */
+        MPath.prototype.translate = function(x, y) {
+            this.addVector(new Vector2D(x, y));
+        }
+
+        /**
+         * Paints this path onto the provided drawview using the provided fill.
+         * @param dv the drawview to draw onto.
+         * @param fill the fill to use.
+         */
+        MPath.prototype.fill = function(dv, fill) {
+            if (dv == null || fill == null) {
+                return;
+            }
+
+            var originalAlpha = dv.globalAlpha;
+
+            dv.beginPath();
+            for (var i = 0; this._vectors.length > i; i++) {
+                var p = this._vectors[i];
+                if (i == 0) {
+                    dv.moveTo(p.x, p.y);
+                } else {
+                    dv.lineTo(p.x, p.y);
+                }
+            }
+            if (this._closed) {
+                dv.closePath();
+            }
+
+            if (fill != null) {
+                dv.globalAlpha = fill.alpha;
+                dv.fillStyle = fill.fill;
+                dv.fill();
+            }
+
+            dv.globalAlpha = originalAlpha;
+        }
+
+        /**
+         * Paints this path onto the provided drawview using the provided stroke.
+         * @param dv the drawview to draw onto.
+         * @param stroke the stroke to use.
+         */
+        MPath.prototype.stroke = function(dv, stroke) {
+            if (dv == null || stroke == null) {
+                return;
+            }
+
+            var originalAlpha = dv.globalAlpha;
+            var originalLineWidth = dv.lineWidth;
+
+            dv.beginPath();
+            for (var i = 0; this._vectors.length > i; i++) {
+                var p = this._vectors[i];
+                if (i == 0) {
+                    dv.moveTo(p.x, p.y);
+                } else {
+                    dv.lineTo(p.x, p.y);
+                }
+            }
+            if (this._closed) {
+                dv.closePath();
+            }
+
+            if (stroke != null) {
+                dv.globalAlpha = stroke.alpha;
+                dv.lineWidth = stroke.thickness;
+                dv.strokeStyle = stroke.color;
+                dv.stroke();
+            }
+
+            dv.globalAlpha = originalAlpha;
+            dv.lineWidth = originalLineWidth;
+        }
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////
+        // CLASS: MDrawingUtil /////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * Collects usefull methods for drawing within drawviews.
+         */
+        function MDrawingUtil() {}
+
+        MDrawingUtil.prototype = new Object();
+        MDrawingUtil.prototype.constructor = MDrawingUtil;
+        Object.registerClass("MDrawingUtil", MDrawingUtil);
+
+        ////////////////////////////////////////////////////////////////////////
+        // Methods /////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+
+        /**
+         * Fills a drawview.
+         * @param dv the drawview to draw on.
+         * @param fill the MFill to fill the drawview with.
+         */
+        MDrawingUtil.prototype.drawFill = function(dv, fill) {
+            var w = dv.width;
+            var h = dv.height;
+
+            var poly = new MPath(true);
+            poly.addVertex(new MPoint(0, 0));
+            poly.addVertex(new MPoint(w, 0));
+            poly.addVertex(new MPoint(w, h));
+            poly.addVertex(new MPoint(0, h));
+            poly.fill(dv, fill);
+        }
+
+        /**
+         * Draws a border around a drawview.
+         * @param dv the drawview to draw on.
+         * @param fill the MFill to fill the border with.
+         * @param thickness the thickness of the border.
+         * @param inside a boolean indicating if the border should be drawn
+         * inside the bounds of the drawview or outside.
+         */
+        MDrawingUtil.prototype.drawBorder = function(
+            dv, fill, thickness, inside
+        ) {
+            var w = dv.width;
+            var h = dv.height;
+
+            var poly = new MPath(true);
+            if (inside) {
+                poly.addVertex(new MPoint(0, 0));
+                poly.addVertex(new MPoint(w, 0));
+                poly.addVertex(new MPoint(w, h));
+                poly.addVertex(new MPoint(0, h));
+                poly.addVertex(new MPoint(0, thickness));
+                poly.addVertex(new MPoint(thickness, thickness));
+                poly.addVertex(new MPoint(thickness, h - thickness));
+                poly.addVertex(new MPoint(w - thickness, h - thickness));
+                poly.addVertex(new MPoint(w - thickness, thickness));
+                poly.addVertex(new MPoint(0, thickness));
+            } else {
+                poly.addVertex(new MPoint(0 - thickness, 0 - thickness));
+                poly.addVertex(new MPoint(w + thickness, 0 - thickness));
+                poly.addVertex(new MPoint(w + thickness, h + thickness));
+                poly.addVertex(new MPoint(0 - thickness, h + thickness));
+                poly.addVertex(new MPoint(0 - thickness, 0));
+                poly.addVertex(new MPoint(0, 0));
+                poly.addVertex(new MPoint(0, h));
+                poly.addVertex(new MPoint(w, h));
+                poly.addVertex(new MPoint(w, 0));
+                poly.addVertex(new MPoint(0 - thickness, 0));
+            }
+            poly.fill(dv, fill);
+        }
+
+        /**
+         * Draws a rectangle.
+         */
+        MDrawingUtil.prototype.drawRect = function(
+            dv, x0, y0, x1, y1, fill, stroke
+        ) {
+            var poly = new MPath(true);
+            poly.addVertex(new MPoint(x0, y0));
+            poly.addVertex(new MPoint(x1, y0));
+            poly.addVertex(new MPoint(x1, y1));
+            poly.addVertex(new MPoint(x0, y1));
+            poly.fill(dv, fill);
+            poly.stroke(dv, stroke);
+        }
+
+        /**
+         * Draws a rounded rectangle.
+         * TBD: this is implementation doesn't work like the other draw methods.
+         */
+        MDrawingUtil.prototype.drawRoundedRect = function(
+            dv, x0, y0, x1, y1, r, fill, stroke
+        ) {
+
+            var s = 0;
+            if (stroke) {
+                s = stroke.thickness;
+                this.drawPartRoundedRect (dv,
+                                           x0, y0, x1, y1,
+                                           {tr:r, tl:r, bl:r, br:r},
+                                           new MFill(1, stroke.color));
+            }
+            this.drawPartRoundedRect (dv,
+                                       x0 + s, y0 + s, x1 - s, y1 - s,
+                                       {tr:r- s, tl:r - s, bl:r - s, br:r - s},
+                                        fill);
+        }
+
+        /**
+         * Draws a rounded rectangle.
+         * TBD: this is implementation doesn't work like the other draw methods.
+         */
+        MDrawingUtil.prototype.drawPartRoundedRect = function(
+            dv, x0, y0, x1, y1, robj, fill
+        ) {
+            dv.beginPath();
+            dv.moveTo(x0 + robj.tl, y0);
+            dv.lineTo(x1 - robj.tr, y0);
+            dv.quadraticCurveTo(x1, y0, x1, y0 + robj.tr);
+            dv.lineTo(x1, y1 - robj.br);
+            dv.quadraticCurveTo(x1, y1, x1 - robj.br, y1);
+            dv.lineTo(robj.bl, y1);
+            dv.quadraticCurveTo(x0, y1, x0, y1 - robj.bl);
+            dv.lineTo(x0, y0 + robj.tl);
+            dv.quadraticCurveTo(x0, y0, x0 + robj.tl, y0);
+            dv.closePath();
+
+            if (fill != null) {
+                dv.globalAlpha = fill.alpha;
+                dv.fillStyle = fill.fill;
+                dv.fill();
+            }
+        }
+
+
+        /**
+         * Draws an oval rectangle.
+         * TBD: this is implementation doesn't work like the other draw methods.
+         */
+        MDrawingUtil.prototype.drawOval = function(
+            dv, x, y, r, yr, fill
+        ) {
+            dv.beginPath();
+            dv.oval(x, y, r, yr);
+
+            if (fill != null) {
+                dv.globalAlpha = fill.alpha;
+                dv.fillStyle = fill.fill;
+                dv.fill();
+            }
+        }
+
+        MDrawingUtil.prototype.drawDropShadow = function(
+            dv, color, intensity, radius, inset
+        ) {
+            this.drawDropShadowClipped(
+                dv, color, intensity, radius, inset, dv.width, dv.height,
+                true, true, true, true, true
+            );
+        }
+
+        /**
+         * Draws a drop shadow on a drawview.
+         * @param dv the drawview to draw on.
+         * @param color the color of the shadow.
+         * @param intensity the starting transparency of the shadow.
+         * @param radius the radius of the shadow and the gradient used
+         * to paint it.
+         * @param inset the number of pixels to inset the shadow on the left
+         * and top.
+         * @param w the width of the dropshadowed element.
+         * @param h the height of the dropshadowed element.
+         * @param partx indicates if this part of the drop shadow should be
+         * drawn. Parts are numbered from the lower left to the upper right.
+         */
+        MDrawingUtil.prototype.drawDropShadowClipped = function(
+            dv, color, intensity, radius, inset, w, h,
+            part1, part2, part3, part4, part5
+        ) {
+            // Pull Defaults if necessary
+            if (color == null) {
+                color = MD_DROP_SHADOW_COLOR;
+            }
+            if (radius == null || 0 > radius) {
+                radius = 0;
+            }
+            if (intensity == null || 0 > intensity) {
+                intensity = MD_DROP_SHADOW_INTENSITY;
+            }
+            if (inset == null || 0 > inset) {
+                inset = 0;
+            }
+
+            // Avoid empty draws
+            if (0 >= w || 0 >= h) {
+                return;
+            }
+
+            // Draw Bottom Bottom Left Corner
+            if (part1) {
+                dv.beginPath();
+                dv.moveTo(0 + inset, h);
+                dv.lineTo(radius + inset, h);
+                dv.lineTo(radius + inset, h + radius);
+                dv.lineTo(0 + inset, h + radius);
+                dv.closePath();
+
+                var g = dv.createRadialGradient(
+                    radius + radius + inset, h - radius, 1, 0 + inset, h + radius, 0
+                );
+                dv.globalAlpha= intensity;
+                g.addColorStop(0, color);
+                dv.globalAlpha= 0.0;
+                g.addColorStop(1, color);
+                dv.fillStyle = g;
+                dv.fill();
+            }
+
+            // Draw Bottom
+            if (part2) {
+                dv.beginPath();
+                dv.moveTo(radius + inset, h);
+                dv.lineTo(w, h);
+                dv.lineTo(w, h + radius);
+                dv.lineTo(radius + inset, h + radius);
+                dv.closePath();
+
+                var g = dv.createLinearGradient(0,h, 0, h + radius);
+                dv.globalAlpha= intensity;
+                g.addColorStop(0, color);
+                dv.globalAlpha= 0.0;
+                g.addColorStop(1, color);
+                dv.fillStyle = g;
+                dv.fill();
+            }
+
+            // Draw Bottom Right Corner
+            if (part3) {
+                dv.beginPath();
+                dv.moveTo(w, h);
+                dv.lineTo(w + radius, h);
+                dv.lineTo(w + radius, h + radius);
+                dv.lineTo(w, h + radius);
+                dv.closePath();
+
+                var g = dv.createRadialGradient(
+                    w + radius, h - radius, 1, w - radius, h + radius, 0
+                );
+                dv.globalAlpha= intensity;
+                g.addColorStop(0, color);
+                dv.globalAlpha= 0.0;
+                g.addColorStop(1, color);
+                dv.fillStyle = g;
+                dv.fill();
+            }
+
+            // Draw Right
+            if (part4) {
+                dv.beginPath();
+                dv.moveTo(w, radius + inset);
+                dv.lineTo(w + radius, radius + inset);
+                dv.lineTo(w + radius, h);
+                dv.lineTo(w, h);
+                dv.closePath();
+
+                var g = dv.createLinearGradient(w,0, w + radius,0);
+                dv.globalAlpha= intensity;
+                g.addColorStop(0, color);
+                dv.globalAlpha= 0.0;
+                g.addColorStop(1, color);
+                dv.fillStyle = g;
+                dv.fill();
+            }
+
+            // Draw Top Right Corner
+            if (part5) {
+                dv.beginPath();
+                dv.moveTo(w, 0 + inset);
+                dv.lineTo(w + radius, 0 + inset);
+                dv.lineTo(w + radius, radius + inset);
+                dv.lineTo(w, radius + inset);
+                dv.closePath();
+
+                var g = dv.createRadialGradient(
+                    w + radius, 0 + inset, 1, w - radius, radius + radius + inset, 0
+                );
+                dv.globalAlpha= intensity;
+                g.addColorStop(0, color);
+                dv.globalAlpha= 0.0;
+                g.addColorStop(1, color);
+                dv.fillStyle = g;
+                dv.fill();
+            }
+        }
+
+        /**
+         * Draws a triangle
+         */
+        MDrawingUtil.prototype.drawTriangle = function(
+            dv, x0, y0, x1, y1, x2, y2, fill, stroke
+        ) {
+            var poly = new MPath(true);
+            poly.addVertex(new MPoint(x0, y0));
+            poly.addVertex(new MPoint(x1, y1));
+            poly.addVertex(new MPoint(x2, y2));
+            poly.fill(dv, fill);
+            poly.stroke(dv, stroke);
+        }
+
+        MDrawingUtil.prototype.measureSubviewsWidth = function(view) {
+            var w = 0;
+            var s = view.subviews;
+
+            for (var i = 0; s.length > i; i++) {
+                var sv = s[i];
+                w = Math.max(sv.x + sv.width, w);
+            }
+            return w;
+        }
+
+        MDrawingUtil.prototype.measureSubviewsHeight = function(view) {
+            var h = 0;
+            var s = view.subviews;
+
+            for (var i = 0; s.length > i; i++) {
+                var sv = s[i];
+                h = Math.max(sv.y + sv.height, h);
+            }
+            return h;
+        }
+    ]]></script>
+
+    <!-- INITIALIZATION -->
+    <script>
+        var gMDrawingUtil = new MDrawingUtil();
+    </script>
+</library>

@@ -1,0 +1,199 @@
+<library>
+
+    <!-- ============================
+         ==
+         == ProjectHeader
+         ==
+         ============================ -->
+    <class name="ProjectHeader">
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="overcolor"/>
+        <ProjectModel name="model"/>
+
+        <!-- ====================
+             ====  ANIMATORS ====
+             ==================== -->
+        <animatorgroup name="goprojectanim" start="false"
+                       process="simultaneous" duration="1000">
+            <animator attribute="x" to="75"/>
+            <animator attribute="y" to="20"/>
+            <animator attribute="width" to="${gMinglebee.width - 150}"/>
+            <animator attribute="height" to="40"/>
+            <animator attribute="opacity" 
+                      to="${gMinglebee.currproj.headeropacity}" 
+                      target="classroot.bg.rect"/>
+            <animator attribute="opacity" to="0" 
+                      target="classroot.bg.outline"/>
+            <animator attribute="opacity" to="1" 
+                      target="classroot.projectname"/>
+            <animator attribute="opacity" to="1"
+                      target="classroot.links.radio"/>
+            <animator attribute="opacity" to="1"
+                      target="classroot.nav"/>
+        </animatorgroup>
+        <!-- -->
+        <animatorgroup name="gohomeanim" start="false"
+                       process="simultaneous" duration="1000">
+            <animator attribute="opacity" to="0"
+                      target="classroot.links.demo"/>
+            <animator attribute="opacity" to="0"
+                      target="classroot.links.radio"/>
+            <animator attribute="opacity" to="0"
+                      target="classroot.nav"/>
+            <animator attribute="opacity" to="0"
+                      target="classroot.projectname"/>
+            <animator attribute="opacity" to="1" 
+                      target="classroot.bg.outline"/>
+        </animatorgroup>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="ongoproject" reference="gMinglebee">
+           this.goprojectanim.doStart();
+        </handler>
+
+        <!-- -->
+        <handler name="onswitchproject" reference="gMinglebee"><![CDATA[
+            //init project info
+            var labelarr = gMinglebee.currproj.label.split("");
+            var label = "";
+            for (var i = 0; i < labelarr.length; i++) {
+                label += labelarr[i] + " ";
+            }
+
+            this.projectname.setAttribute("text", label);
+            this.setAttribute("overcolor", 
+                gMinglebee.currproj.accentcolor);
+
+            if (gMinglebee.currproj.demolink != null) {
+                this.links.demo.animate("opacity", 1, 1000);
+            } else {
+                this.links.demo.setAttribute("opacity", 0);
+            }
+            this.nav.prev.setAttribute("visible", 
+                gMinglebee.currproj.dnprev != null);
+            this.nav.next.setAttribute("visible", 
+                gMinglebee.currproj.dnnext != null);
+
+            this.links.radio.select(this.links.radio.intro);
+            this.showIntro();            
+        ]]></handler>
+        
+        <!-- -->
+        <handler name="ongohome" reference="gMinglebee">
+            gGallery.setAttribute("visible", false);
+            this.gohomeanim.doStart();
+        </handler>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="showIntro">
+            gGallery.setAttribute("visible", false);
+            gProjectScreen.setAttribute("visible", true);
+        </method>
+        <!-- -->
+        <method name="showDemo">
+            LzBrowser.loadURL(gMinglebee.currproj.demolink, 
+                "minglebeewindow");
+        </method>
+        <!-- -->
+        <method name="showGallery">
+            gGallery.datapath.setPointer(gMinglebee.currproj.datapath.p);
+            gProjectScreen.setAttribute("visible", false);
+            gGallery.setAttribute("visible", true);
+        </method>
+
+        <!-- -->
+        <method name="showNextProject">
+            this.model.datapath.setPointer(gMinglebee.currproj.dnnext);
+            gMinglebee.showProject(this.model);
+        </method>
+        <!-- -->
+        <method name="showPrevProject">
+            this.model.datapath.setPointer(gMinglebee.currproj.dnprev);
+            gMinglebee.showProject(this.model);
+        </method>
+
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <!-- ====
+             Background
+             ==== -->
+        <view name="bg" width="100%" height="100%"
+              opacity="${gMinglebee.currproj.headeropacity}"> 
+            <view name="rect" width="100%" height="100%" 
+                  bgcolor="white" opacity=".8"/>
+            <mbrectoutline name="outline" width="100%" height="100%"
+                           color="0xDDDDDD"/>
+        </view>
+        
+        <!-- ====
+             Project name
+             ==== -->
+        <text name="projectname" x="13" fontsize="18"
+              y="3" opacity="0" width="600" fontstyle="italic"
+              fgcolor="${classroot.overcolor}" height="50"/>
+
+        <view name="links" valign="middle" width="${parent.width - 10}">
+            <simplelayout axis="y" spacing="-3"/>
+            <!-- ====
+                 Project content nav
+                 ==== -->
+            <radiogroup name="radio" font="mbsubfont" fontsize="9" opacity="0"
+                  layout="class:simplelayout; spacing:-3" width="100%"
+                  fontstyle="bold">
+                <ProjectLink name="intro" text="INTRO" selected="true"
+                             color="${gMinglebee.currproj.linkcolor}">
+                    <handler name="onselected">
+                        if (this.selected) {
+                            classroot.showIntro();
+                        }
+                    </handler>
+                </ProjectLink>
+                <ProjectLink name="gallery" text="GALLERY"
+                             color="${gMinglebee.currproj.linkcolor}">
+                    <handler name="onselected">
+                        if (this.selected) {
+                            classroot.showGallery();
+                        }
+                    </handler>
+                </ProjectLink>
+            </radiogroup>
+            <!-- ====
+                 Demo link
+                 ==== -->
+            <mbtextlink name="demo" opacity="0" align="right"                        
+                        text="DEMO" dobold="false" iscap="false" 
+                        color="${gMinglebee.currproj.linkcolor}" 
+                        overcolor="${classroot.overcolor}"
+                        fontsize="9" onclick="classroot.showDemo()"
+                        fontstyle="bold"/>
+        </view>
+        
+        <!-- ====
+             Back/Forward
+             ==== -->
+        <view name="nav" opacity="0">
+            <mbtextlink name="prev"
+                        text=">>" font="mbfont" x="-20" dobold="false"
+                        fontsize="17" rotation="180" y="${this.height + 9}"
+                        color="${gMinglebee.currproj.linkcolor}" 
+                        overcolor="${classroot.overcolor}"
+                        onclick="classroot.showPrevProject()"/>
+            <mbtextlink name="next"
+                        text=">>" font="mbfont" dobold="false"
+                        fontsize="17" y="6" x="${classroot.width + 20}"
+                        color="${gMinglebee.currproj.linkcolor}" 
+                        overcolor="${classroot.overcolor}"
+                        onclick="classroot.showNextProject()"/>
+        </view>
+            
+    </class>
+
+</library>

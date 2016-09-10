@@ -1,0 +1,68 @@
+<library>
+
+    <!-- ============================
+         ==
+         == ProjectScreen
+         ==
+         ============================ -->
+    <class name="ProjectScreen"
+           height="485" opacity="0">
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <mbojectpool name="txtpool"
+                     objclassname="LzText"
+                     initargs="$once{{fgcolor: 0x444444, fontsize: 13,
+                               font: 'mbtextfont', multiline: true}}"/>
+        <mbojectpool name="imagepool"
+                     objclassname="mbimage"/>
+
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="ongoproject" reference="gMinglebee">
+            this.setAttribute("visible", true);
+            this.animate("opacity", 1, 1500);
+        </handler>
+        <handler name="onswitchproject" reference="gMinglebee">
+            this.showScreen(gMinglebee.currproj.getIntroData());
+        </handler>
+        <handler name="ongohome" reference="gMinglebee">
+            this.animate("opacity", 0, 500);
+        </handler>
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="showScreen" args="dnscreen"><![CDATA[
+            this.txtpool.returnAllObjs();
+            this.imagepool.returnAllObjs();
+
+            var dn;
+            var obj;
+            for (var i = 0; i < dnscreen.childNodes.length; i++) {
+                dn = dnscreen.childNodes[i];
+                switch (dn.nodeName) {
+                     case "text":
+                         obj = this.txtpool.getObj();
+                         obj.setAttribute("text", dn.attributes.text);
+                         obj.setAttribute("x", Number(dn.attributes.x));
+                         obj.setAttribute("y", Number(dn.attributes.y));
+                         obj.setAttribute("width", Number(dn.attributes.width));
+                         break;
+                     case "image":
+                         obj = this.imagepool.getObj();
+                         obj.setAttribute("x", Number(dn.attributes.x));
+                         obj.setAttribute("y", Number(dn.attributes.y));
+
+                         obj.setAttribute("imageurl", dn.attributes.url);
+                         break;
+                         
+                }
+            }
+        ]]></method>
+
+    </class>
+
+</library>

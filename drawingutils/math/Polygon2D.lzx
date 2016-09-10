@@ -1,0 +1,116 @@
+<library>
+    <script><![CDATA[
+        ////////////////////////////////////////////////////////////////////////
+        // Constructor /////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        function Polygon2D() {
+            this._vectors = new Array();
+        }
+        
+        Polygon2D.prototype = new Object();
+        Polygon2D.prototype.constructor = Polygon2D;
+        Object.registerClass("Polygon2D", Polygon2D);
+        
+        
+        ////////////////////////////////////////////////////////////////////////
+        // Methods /////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        /**
+         * Adds a Vector2D to this Polygon2D.
+         * @param v the Vector2D to add.
+         * @return void
+         */
+        Polygon2D.prototype.addVertex = function(v) {
+            this._vectors[this._vectors.length] = v;
+        };
+        
+        /**
+         * Inserts a Vector2D into this Polygon2D at the provided location.
+         * @param index the index to insert at.
+         * @param x the x value of the Vector2D to insert.
+         * @param y the y value of the Vector2D to insert.
+         * @return void
+         */
+        Polygon2D.prototype.insertVertex = function(index, x, y) {
+            var v = new Vector2D();
+            v.set(x, y);
+            this._vectors.splice(index, 0, v);
+        };
+        
+        /**
+         * Deletes a Vector2D from this Polygon2D at the provided location.
+         * @param index the index to delete at.
+         * @return void
+         */
+        Polygon2D.prototype.deleteVertex = function(index) {
+            this._vectors.splice(index,1);
+        };
+        
+        // Setters /////////////////////////////////////////////////////////////
+        /**
+         * Sets this Polygon2D to have the same vertices as the provided 
+         * Polygon2D.
+         * @param poly the Polygon2D to copy from.
+         * @return void
+         */
+        Polygon2D.prototype.set = function(poly) {
+            if (poly == null) {
+                return;
+            }
+            this._vectors = new Array();
+            for (var i = 0; i < poly._vectors.length; i++) {
+                this._vectors[i] = new Vector2D();
+                this._vectors[i].setVector(poly._vectors[i]);
+            }
+        };
+        
+        // Getters /////////////////////////////////////////////////////////////
+        /**
+         * Gets a vertex for the provided index.
+         * @param index the index of the vertex to get.
+         * @return a Vector2D or null if none was found.
+         */
+        Polygon2D.prototype.getVertex = function(index) {
+            if (index < this._vectors.length) {
+                return this._vectors[index];
+            } else {
+                return null;
+            }
+        };
+        
+        // Tranformations //////////////////////////////////////////////////////
+        Polygon2D.prototype.addTransform = function(t) {
+            this.addVector(t.getLocation());
+            this.addRotation(t);
+        }
+        
+        Polygon2D.prototype.subtractTransform = function (t) {
+            this.subtractRotation(t);
+            this.subtractVector(t.getLocation());
+        }
+        
+        Polygon2D.prototype.addVector = function(v) {
+            for (var i = 0; i < this._vectors.length; i++) {
+                this._vectors[i].addVector(v);
+            }
+        }
+        
+        Polygon2D.prototype.subtractVector = function (v) {
+            for (var i = 0; i < this._vectors.length; i++) {
+                this._vectors[i].subtractVector(v);
+            }
+        }
+        
+        Polygon2D.prototype.addRotation = function (t) {
+            for (var i = 0; i < this._vectors.length; i++) {
+                this._vectors[i].addRotation(t);
+            }
+        }
+        
+        Polygon2D.prototype.subtractRotation = function (t) {
+            for (var i = 0; i < this._vectors.length; i++) {
+                this._vectors[i].subtractRotation(t);
+            }
+        }
+    ]]></script>
+</library>

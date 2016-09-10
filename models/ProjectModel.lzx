@@ -1,0 +1,87 @@
+<library>
+
+    <!-- ============================
+         ==
+         == Project Model
+         ==
+         ============================ -->
+    <class name="ProjectModel">
+
+        <datapath/>
+
+        <!-- ====================
+             ==== ATTRIBUTES ====
+             ==================== -->
+        <attribute name="projectid"/>
+        <attribute name="label"/>
+        <attribute name="color"/>
+        <attribute name="accentcolor"/>
+        <attribute name="description"/>
+
+        <attribute name="parentmenulabel"/>
+        <attribute name="parentmenuoffset"/>
+
+        <attribute name="demolink"/>
+
+        <attribute name="dnprev" value="$once{null}"/>
+        <attribute name="dnnext" value="$once{null}"/>
+
+        <attribute name="headeropacity" value=".6"/>
+        <attribute name="categoryopacity" value=".7"/>
+        <attribute name="linkcolor" value="0x888888"/>
+
+        <attribute name="category"/>
+        <!-- ====================
+             ====  HANDLERS  ====
+             ==================== -->
+        <handler name="ondata" args="d"><![CDATA[
+            if (!d) { return; }
+            this.projectid = d.attributes.id;
+            this.label = d.attributes.label;
+            this.color = Number(d.attributes.color);
+            this.setAttribute("accentcolor", Number(d.attributes.color2));
+            this.setAttribute("headeropacity", 
+                d.attributes["headeropacity"] ? 
+                d.attributes["headeropacity"] : .8);
+            this.setAttribute("categoryopacity", 
+                d.attributes["categoryopacity"] ? 
+                Number(d.attributes["categoryopacity"]) : .5);
+            this.setAttribute("linkcolor", 
+                d.attributes["linkcolor"] ? 
+                Number(d.attributes["linkcolor"]) : 0x888888);
+
+            this.description = d.attributes.description;
+            this.demolink = d.attributes.demolink;
+            this.parentmenulabel = d.parentNode.attributes.label;            
+            this.setAttribute("parentmenuoffset",
+                Number(d.parentNode.attributes.offset));            
+
+            //figure out next and previous nodes
+            var projects = this.datapath.xpathQuery(
+                "dsstructure:/minglebee/menu/project");
+            for (var i = 0; i < projects.length; i++) {
+                if (projects[i] == d) {
+                    this.dnprev = projects[i - 1];
+                    this.dnnext = projects[i + 1];
+
+                    if (!dnprev) {this.dnprev = projects[projects.length - 2];}
+                    if (!dnnext) {this.dnnext = projects[0];}
+
+                    if (this.dnnext.attributes["linkto"]) {
+                        this.dnnext = projects[0];
+                    }
+
+                }
+            }
+
+            this.category = d.parentNode.attributes.label;
+        ]]></handler>
+
+
+        <method name="getIntroData">
+            return this.datapath.xpathQuery("introscreen");
+        </method>
+
+    </class>
+
+</library>

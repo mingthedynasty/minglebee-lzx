@@ -1,0 +1,36 @@
+<library>
+
+
+    <!-- ============================
+         ==
+         == Utils
+         ==
+         ============================ -->
+    <class name="Utils">
+
+
+        <!-- ====================
+             ====   METHODS  ====
+             ==================== -->
+        <method name="getImageTargetSizeInRect" args="image, maxw, maxh">
+            var w = image.resourcewidth;
+            var h = image.resourceheight;
+
+            var nw = 0;
+            var nh = 0;
+
+            nw = maxw;
+            nh = maxw * h/w;
+            
+            if(nh > maxh)
+            {
+                nh = maxh;
+                nw = maxh * w/h;
+            }       
+            
+            return {w: nw, h: nh};
+        </method>
+
+    </class>
+
+</library>

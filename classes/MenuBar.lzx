@@ -1,0 +1,40 @@
+<library>
+
+    <!-- ============================
+         ==
+         == Menu Bar
+         ==
+         ============================ -->
+    <class name="MenuBar"
+           fontsize="10" datapath="dsstructure:/minglebee">
+
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <handler name="ondata" args="d"><![CDATA[
+            var sv = this.subviews;
+            var total = 0;
+            for (var i = 0; i < sv.length; i++) {
+                total +=  sv[i].width;                
+            }
+            var spacing = Math.round(
+                (this.width - total)/(sv.length - 1));
+
+            var menu;
+            var nx = 0;
+            for (var i = 0; i < sv.length; i++) {
+                menu = sv[i];
+                menu.setAttribute("x", nx);
+                nx += menu.width + spacing;
+            }
+
+        ]]></handler>
+
+        <!-- ====================
+             ====    VIEWS   ====
+             ==================== -->
+        <Menu datapath="menu"/>
+
+    </class>
+
+</library>

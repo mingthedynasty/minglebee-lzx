@@ -1,0 +1,15 @@
+<library>
+
+    <include href="gallery"/>
+
+    <include href="Home.lzx"/>
+    <include href="ContentBackground.lzx"/>
+
+    <include href="MenuBar.lzx"/>
+    <include href="Menu.lzx"/>
+
+    <include href="IntroScreen.lzx"/>
+
+    <include href="Utils.lzx"/>
+
+</library>

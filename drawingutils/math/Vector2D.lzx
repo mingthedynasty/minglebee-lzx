@@ -1,0 +1,189 @@
+<library>
+    <script><![CDATA[
+        // Constructor /////////////////////////////////////////////////////////
+        function Vector2D(x, y) {
+            this.x = (x != null) ? x : 0;
+            this.y = (y != null) ? y : 0;
+        }
+        
+        Vector2D.prototype = new Object();
+        Vector2D.prototype.constructor = Vector2D;
+        Object.registerClass("Vector2D", Vector2D);
+        
+        
+        ////////////////////////////////////////////////////////////////////////
+        // Methods /////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        
+        // Equality Tests //////////////////////////////////////////////////////
+        /**
+         * Checks if this Vector2D is equal to the provided Vector2D.
+         * @param v the Vector2D to check against.
+         * @return true if we're equal, false otherwise.
+         */
+        Vector2D.prototype.equalsVector = function(v) {
+            if (v == null) {
+                return false;
+            }
+            return (v.x == this.x && v.y == this.y);
+        };
+        
+        /**
+         * Checks if this Vector2D is equal to the provided coordinates.
+         * @param x the x coordinate to check against.
+         * @param y the y coordinate to check against.
+         * @return true if we're equal, false otherwise.
+         */
+        Vector2D.prototype.equals = function(x, y) {
+            return (this.x == x && this.y == y);
+        };
+        
+        // Setters /////////////////////////////////////////////////////////////
+        /**
+         * Sets the values of this Vector2D to those of the provided 
+         * coordinates.
+         * @param x the x coordinate to set.
+         * @param y the y coordinate to set.
+         * @return void.
+         */
+        Vector2D.prototype.set = function(x, y) {
+            this.x = new Number(x);
+            this.y = new Number(y);
+        };
+        
+        /**
+         * Sets the values of this Vector2D to those of the provided Vector2D.
+         * @param v the Vector2D to emulate.
+         * @return void.
+         */
+        Vector2D.prototype.setVector = function(v) {
+            if (v == null) {
+                return;
+            }
+            this.x = v.x;
+            this.y = v.y;
+        };
+        
+        // Adjustments /////////////////////////////////////////////////////////
+        /**
+         * Adds the provided values to this Vector2D.
+         * @param x the x amount to add.
+         * @param y the y amount to add.
+         * @return void.
+         */
+        Vector2D.prototype.add = function(x, y) {
+            this.x += new Number(x);
+            this.y += new Number(y);
+        };
+        
+        /**
+         * Subtracts the provided values from this Vector2D.
+         * @param x the x amount to subtract.
+         * @param y the y amount to subtract.
+         * @return void.
+         */
+        Vector2D.prototype.subtract = function(x, y) {
+            this.add(-x, -y);
+        };
+        
+        /**
+         * Adds the provided Vector2D to this Vector2D.
+         * @param v the Vector2D to add.
+         * @return void.
+         */
+        Vector2D.prototype.addVector = function(v) {
+            this.add(v.x, v.y);
+        };
+        
+        /**
+         * Subtracts the provided Vector2D from this Vector2D.
+         * @param v the Vector2D to subtract.
+         * @return void.
+         */
+        Vector2D.prototype.subtractVector = function(v) {
+            this.add(-v.x, -v.y);
+        };
+        
+        /**
+         * Multiplies this Vector2D by the provided value.
+         * @param s the amount to multiply by.
+         * @return void.
+         */
+        Vector2D.prototype.multiply = function(s) {
+            this.x *= s;
+            this.y *= s;
+        };
+        
+        /**
+         * Divides this Vector2D by the provided value.
+         * @param s the amount to divide by.
+         * @return void.
+         */
+        Vector2D.prototype.divide = function(s) {
+            this.x /= s;
+            this.y /= s;
+        };
+        
+        // Getters /////////////////////////////////////////////////////////////
+        /**
+         * Gets the length of this Vector2D.
+         * @return the length of this Vector2D.
+         */
+        Vector2D.prototype.length = function() {
+            return Math.sqrt((this.x * this.x) + (this.y * this.y));
+        };
+        
+        /**
+         * Gets the dot product of this Vector2D with the provided one.
+         * @param v a Vector2D.
+         * @return the dot product.
+         */
+        Vector2D.prototype.getDotProduct = function(v) {
+            return (this.x * v.x) + (this.y * v.y);
+        };
+        
+        // Transforms //////////////////////////////////////////////////////////
+        /**
+         * Converts this Vector2D to a unit vector.
+         * @return void.
+         */
+        Vector2D.prototype.normalize = function() {
+            this.divide(this.length());
+        };
+        
+        /**
+         * Applies the provided Transform2D to this Vector2D
+         */
+        Vector2D.prototype.addTransform = function(t) {
+            this.addRotation(t);
+            this.addVector(t.getLocation());
+        };
+        
+        /**
+         * Applies the provided Transform2D in reverse to this Vector2D
+         */
+        Vector2D.prototype.subtractTransform = function(t) {
+            this.subtractVector(t.getLocation());
+            this.subtractRotation(t);
+        };
+        
+        Vector2D.prototype.addRotation = function(t) {
+            this.rotate(t.getCosAngle(), t.getSinAngle());
+        };
+        
+        Vector2D.prototype.subtractRotation = function(t) {
+            this.rotate(t.getCosAngle(), -t.getSinAngle());
+        };
+        
+        /**
+         * Rotates this Vector2D the specified amount using precomputed cosine 
+         * and sine values of the rotation angle.
+         */
+        Vector2D.prototype.rotate = function(cosAngle, sinAngle) {
+            var xNew = this.x * cosAngle - this.y * sinAngle;
+            var yNew = this.x * sinAngle + this.y * cosAngle;
+            this.x = xNew;
+            this.y = yNew;
+        };
+    ]]></script>
+</library>
