@@ -1,0 +1,119 @@
+*
+{
+	margin: 0px;
+	border: 0px;
+	padding: 0px;
+}
+
+body {
+	font-family: "museo-slab", sans-serif;
+	font-size: 16px;
+	line-height: 1.4em;
+	color: #333333;
+}
+
+/* shared */
+.subheading {
+	/*font-size: 12px;*/
+	font-weight: bold;
+}
+
+div#header {
+	font-size: 13px;
+	width: 760px;
+	text-align: left;
+	line-height: 1em;
+}
+
+div#header a {
+	float: right;
+	margin-top: -5px;
+}
+
+div#section {
+	width: 760px;
+	text-align: left;
+}
+
+div#label {
+	/*font-family: "source-sans-pro";	*/
+	text-transform: uppercase;
+	/*font-size: 14px;*/
+	/*font-weight: bold;*/
+	width: 200px;
+	float: left;
+	padding: 0px;
+	text-align: left;
+}
+
+div#maintext {
+	width: 560px;
+	padding: 0px;
+	float: left;
+	/*text-align: justify;	*/
+}
+
+/* specific */
+div#container {
+}
+
+.myname {
+	/*font-family: "ff-tisa-sans-web-pro";*/
+	font-size: 30px;
+	margin-bottom: 100px;
+	/*font-weight: bold;	*/
+}
+
+div#project {
+	width: 530px;
+	float: right;
+	padding: 0px;
+	text-align: justify;
+}
+.projectheading {
+	/*font-size: 11px;*/
+	font-weight: bold; 
+}
+ 
+/* spacers */
+div#sectionspacer {
+	height: 40px;
+	width: 760px;
+}
+
+div#skillspacer {
+	height: 5px;
+	width: 560px;
+}
+
+div#subheadingcontentspacer{
+	height: 10px;
+	width: 560px;
+}
+
+div#projectspacer{
+	height: 15px;
+	float: right;
+	width: 530px;
+}
+
+div#jobspacer{
+	height: 20px;
+	width: 560px;
+}
+
+/* links */
+a:link {
+    color: #990000;
+	text-decoration: none;
+}
+
+a:visited{
+    color: #990000;
+	text-decoration: none;
+}
+
+a:hover {
+    color: #990000;
+	text-decoration: underline;
+}
