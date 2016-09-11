@@ -1,0 +1,68 @@
+8
+
+dir
+1
+svn+ssh://minglebee.com@minglebee.com/home/55706/data/svn/blogbubbles/laszlo/dev/lps/includes
+svn+ssh://minglebee.com@minglebee.com/home/55706/data/svn/blogbubbles
+
+
+
+2008-11-27T20:32:22.683264Z
+1
+minglebee.com
+
+
+svn:special svn:externals svn:needs-lock
+
+vbembed.js
+file
+
+
+
+
+2006-11-01T17:12:36.000000Z
+f413c414dcbba485c88f4deea8e9b7ea
+2008-11-27T20:32:22.683264Z
+1
+minglebee.com
+has-props
+
+h.swf
+file
+
+
+
+
+2006-11-01T17:12:36.000000Z
+d09cd416e622e383f11e66505bc79612
+2008-11-27T20:32:22.683264Z
+1
+minglebee.com
+has-props
+
+embed.js
+file
+
+
+
+
+2006-11-01T17:12:36.000000Z
+ed8116f44a92d31ddb7214affee96d17
+2008-11-27T20:32:22.683264Z
+1
+minglebee.com
+has-props
+
+h.html
+file
+
+
+
+
+2006-11-01T17:12:36.000000Z
+865c06213892431a7620abe1f19d508a
+2008-11-27T20:32:22.683264Z
+1
+minglebee.com
+has-props
+
